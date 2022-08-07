@@ -1,20 +1,24 @@
 // ==UserScript==
 // @name         Emby danmaku extension
 // @description  鼠鼠怕不是要生气嘞!
-// @namespace    RyoLee
+// @namespace    https://github.com/RyoLee
 // @author       RyoLee
 // @version      1.0
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js
-// @require      http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
-// @require      http://code.jquery.com/jquery-1.11.0.min.js
-// @match        https://192.168.100.10:8096/web/index.html
+// @updateURL    https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku/ede.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku/ede.js
+// @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.canvas.min.js
+// @require      https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js
+// @match        */web/index.html
 // ==/UserScript==
-// config
-var chConvert = 1    //中文简繁转换。0-不转换，1-转换为简体，2-转换为繁体。
 
+// ------config start------
+//中文简繁转换。0-不转换，1-转换为简体，2-转换为繁体。
+var chConvert = 1
+
+// ------config end------
 // 除非你知道你在做什么,否则不要修改以下部分
 var danmaku_icon = '<i class="md-icon">&#xE048;</i>'
 var search_icon = '<i class="md-icon">&#xE881;</i>'
@@ -62,22 +66,22 @@ function initButton() {
     menubar.appendChild(danmakuInfo)
     $("#displayDanmaku").click(function () {
         if (is_danmaku_show) {
-            console.log("hide danmaku")
+            console.log("隐藏弹幕")
             danmaku.hide();
             is_danmaku_show = false
         } else {
-            console.log("show danmaku")
+            console.log("显示弹幕")
             danmaku.show();
             is_danmaku_show = true
         }
     })
     $("#searchDanmaku").click(function () {
         is_new_video = false
-        console.log("search danmaku")
+        console.log("手动匹配弹幕")
         initDanmaku(false)
     })
     $("#infoDanmaku").click(function () {
-        console.log("show info")
+        console.log("显示当前信息")
         if (episode_info != null) {
             alert(episode_info)
         }
@@ -142,8 +146,8 @@ function getDanmaku(is_auto, data) {
             }
         }
         if (!is_auto) {
-            console.log(data)
             var anime_lists_str = list2string(data)
+            console.log(data)
             console.log(anime_lists_str);
             selecAnime_id = prompt("选择:\n" + anime_lists_str, selecAnime_id)
             window.localStorage.setItem(_id_key, data.animes[selecAnime_id].animeId)
@@ -162,10 +166,8 @@ function getDanmaku(is_auto, data) {
         }
 
         $.getJSON("https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true&chConvert=" + chConvert, function (data) {
-
-            console.log("弹幕请求成功");
+            console.log("弹幕加载成功");
             var _comments = bilibiliParser(data.comments)
-            console.log(_comments.length)
             var _container = document.querySelector("div[data-type='video-osd']")
             var _media = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']")
             if (danmaku != null) {
@@ -184,7 +186,7 @@ function getDanmaku(is_auto, data) {
 
             var player_container = document.querySelector("div[class='videoPlayerContainer']");
             new ResizeObserver(() => {
-                console.log("resizing")
+                console.log("Resizing")
                 danmaku.resize()
             }).observe(player_container)
         })
@@ -270,26 +272,6 @@ function playVideo() {
     }
 }
 
-/**
- * A utility function for userscripts that detects and handles AJAXed content.
- *
- * Usage example:
- *
- *     function callback(domElement) {
- *         domElement.innerHTML = "This text inserted by waitForKeyElements().";
- *     }
- * 
- *     waitForKeyElements("div.comments", callback);
- *     // or
- *     waitForKeyElements(selectorFunction, callback);
- *
- * @param {(string|function)} selectorOrFunction - The selector string or function.
- * @param {function} callback - The callback function; takes a single DOM element as parameter.
- *                              If returns true, element will be processed again on subsequent iterations.
- * @param {boolean} [waitOnce=true] - Whether to stop after the first elements are found.
- * @param {number} [interval=300] - The time (ms) to wait between iterations.
- * @param {number} [maxIntervals=-1] - The max number of intervals to run (negative number for unlimited).
- */
 function waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, maxIntervals) {
     if (typeof waitOnce === "undefined") {
         waitOnce = true;
@@ -331,10 +313,12 @@ function waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, ma
 
 (function () {
     'use strict';
-    waitForKeyElements("div[class='videoOsd-endsAtText']", initButton)
-    waitForKeyElements("video[class='htmlvideoplayer moveUpSubtitles']", function () {
-        video_container = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']");
-        video_container.addEventListener('loadstart', loadVideo)
-        video_container.addEventListener('play', playVideo)
-    })
+    if (document.querySelector('meta[name="application-name"]').content.toUpperCase() == 'Emby'.toUpperCase()) {
+        waitForKeyElements("div[class='videoOsd-endsAtText']", initButton)
+        waitForKeyElements("video[class='htmlvideoplayer moveUpSubtitles']", function () {
+            video_container = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']");
+            video_container.addEventListener('loadstart', loadVideo)
+            video_container.addEventListener('play', playVideo)
+        })
+    }
 })();
