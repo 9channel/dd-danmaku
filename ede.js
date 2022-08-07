@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Emby danmaku extension
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  鼠鼠怕不是要生气嘞!
 // @author       Ryo
 // @match        https://192.168.100.10:8096/web/index.html
@@ -10,7 +10,6 @@
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 // @require      http://code.jquery.com/jquery-1.11.0.min.js
-// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 // config
 var chConvert = 1    //中文简繁转换。0-不转换，1-转换为简体，2-转换为繁体。
@@ -160,71 +159,34 @@ function getDanmaku(is_auto, data) {
         } else {
             episode_info = "动画名称:" + data.animes[selecAnime_id].animeTitle
         }
-        GM_xmlhttpRequest({
-            method: "GET",
-            url: "https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true&chConvert=" + chConvert,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
-            },
-            data: "",
-            onload: function (data) {
-                var _comments = bilibiliParser(JSON.parse(data.responseText).comments)
-                console.log("弹幕加载成功:" + _comments.length);
-                var _container = document.querySelector("div[data-type='video-osd']")
-                var _media = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']")
-                if (danmaku != null) {
-                    danmaku.clear();
-                    danmaku.destroy()
-                    danmaku = null
-                    episode_info = null
-                    selecAnime_id = 0
-                }
-                danmaku = new Danmaku({
-                    container: _container,
-                    media: _media,
-                    comments: _comments,
-                    engine: 'canvas'
-                })
 
-                var player_container = document.querySelector("div[class='videoPlayerContainer']");
-                new ResizeObserver(() => {
-                    console.log("resizing")
-                    danmaku.resize()
-                }).observe(player_container)
+        $.getJSON("https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true", function (data) {
 
-            },
-            onerror: function (data) {
-                console.log("弹幕加载失败");
+            console.log("弹幕请求成功");
+            var _comments = bilibiliParser(data.comments)
+            console.log(_comments.length)
+            var _container = document.querySelector("div[data-type='video-osd']")
+            var _media = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']")
+            if (danmaku != null) {
+                danmaku.clear();
+                danmaku.destroy()
+                danmaku = null
+                episode_info = null
+                selecAnime_id = 0
             }
+            danmaku = new Danmaku({
+                container: _container,
+                media: _media,
+                comments: _comments,
+                engine: 'canvas'
+            })
+
+            var player_container = document.querySelector("div[class='videoPlayerContainer']");
+            new ResizeObserver(() => {
+                console.log("resizing")
+                danmaku.resize()
+            }).observe(player_container)
         })
-        // 暂不支持跨域
-        // $.getJSON("https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true", function (data) {
-
-        //     console.log("弹幕请求成功");
-        //     var _comments = bilibiliParser(data.comments)
-        //     console.log(_comments.length)
-        //     var _container = document.querySelector("div[data-type='video-osd']")
-        //     var _media = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']")
-        //     if (danmaku != null) {
-        //         danmaku.clear();
-        //         danmaku.destroy()
-        //         danmaku = null
-        //         episode_info = null
-        //         selecAnime_id = 0
-        //     }
-        //     danmaku = new Danmaku({
-        //         container: _container,
-        //         media: _media,
-        //         comments: _comments,
-        //         engine: 'canvas'
-        //     })
-
-        //     var player_container = document.querySelector("div[class='videoPlayerContainer']");
-        //     new ResizeObserver(() => {
-        //         console.log("resizing")
-        //         danmaku.resize()
-        //     }).observe(player_container)
-        // })
     })
 }
 
