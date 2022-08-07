@@ -11,26 +11,22 @@ async function handleRequest(request) {
     if (!(tUrlObj.hostname in hostlist)) {
         return Forbidden(tUrlObj)
     }
-    const response = await fetch(url, {
+    let response = await fetch(url, {
         headers: request.headers,
         body: request.body,
         method: request.method
     })
-    let respHeaders = {}
-    response.headers.forEach((value, key) => respHeaders[key] = value)
-    respHeaders['Access-Control-Allow-Origin'] = '*'
-    return new Response(await response.body, {
-        headers: respHeaders,
-        status: response.status
-    });
+    response = new Response(await response.body, response)
+    response.headers.set("Access-Control-Allow-Origin", "*")
+    return response
 }
-
-addEventListener('fetch', event => {
-    return event.respondWith(handleRequest(event.request))
-})
 
 function Forbidden(url) {
     return new Response(`Hostname ${url.hostname} not allowed.`, {
         status: 403,
     });
 }
+
+addEventListener('fetch', event => {
+    return event.respondWith(handleRequest(event.request))
+})

@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         Emby danmaku extension
-// @namespace    http://tampermonkey.net/
-// @version      0.3
 // @description  鼠鼠怕不是要生气嘞!
-// @author       Ryo
-// @match        https://192.168.100.10:8096/web/index.html
-// @icon         https://www.google.com/s2/favicons?domain=0.103
+// @namespace    RyoLee
+// @author       RyoLee
+// @version      1.0
+// @copyright    2022, RyoLee (https://github.com/RyoLee)
+// @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
+// @icon         https://github.githubassets.com/pinned-octocat.svg
 // @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js
-// @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
 // @require      http://code.jquery.com/jquery-1.11.0.min.js
+// @match        https://192.168.100.10:8096/web/index.html
 // ==/UserScript==
 // config
 var chConvert = 1    //中文简繁转换。0-不转换，1-转换为简体，2-转换为繁体。
@@ -160,7 +161,7 @@ function getDanmaku(is_auto, data) {
             episode_info = "动画名称:" + data.animes[selecAnime_id].animeTitle
         }
 
-        $.getJSON("https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true", function (data) {
+        $.getJSON("https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/" + episodeId + "?withRelated=true&chConvert=" + chConvert, function (data) {
 
             console.log("弹幕请求成功");
             var _comments = bilibiliParser(data.comments)
@@ -266,6 +267,65 @@ function playVideo() {
         }
         is_new_video = false
         initDanmaku()
+    }
+}
+
+/**
+ * A utility function for userscripts that detects and handles AJAXed content.
+ *
+ * Usage example:
+ *
+ *     function callback(domElement) {
+ *         domElement.innerHTML = "This text inserted by waitForKeyElements().";
+ *     }
+ * 
+ *     waitForKeyElements("div.comments", callback);
+ *     // or
+ *     waitForKeyElements(selectorFunction, callback);
+ *
+ * @param {(string|function)} selectorOrFunction - The selector string or function.
+ * @param {function} callback - The callback function; takes a single DOM element as parameter.
+ *                              If returns true, element will be processed again on subsequent iterations.
+ * @param {boolean} [waitOnce=true] - Whether to stop after the first elements are found.
+ * @param {number} [interval=300] - The time (ms) to wait between iterations.
+ * @param {number} [maxIntervals=-1] - The max number of intervals to run (negative number for unlimited).
+ */
+function waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, maxIntervals) {
+    if (typeof waitOnce === "undefined") {
+        waitOnce = true;
+    }
+    if (typeof interval === "undefined") {
+        interval = 300;
+    }
+    if (typeof maxIntervals === "undefined") {
+        maxIntervals = -1;
+    }
+    var targetNodes = (typeof selectorOrFunction === "function")
+        ? selectorOrFunction()
+        : document.querySelectorAll(selectorOrFunction);
+
+    var targetsFound = targetNodes && targetNodes.length > 0;
+    if (targetsFound) {
+        targetNodes.forEach(function (targetNode) {
+            var attrAlreadyFound = "data-userscript-alreadyFound";
+            var alreadyFound = targetNode.getAttribute(attrAlreadyFound) || false;
+            if (!alreadyFound) {
+                var cancelFound = callback(targetNode);
+                if (cancelFound) {
+                    targetsFound = false;
+                }
+                else {
+                    targetNode.setAttribute(attrAlreadyFound, true);
+                }
+            }
+        });
+    }
+
+    if (maxIntervals !== 0 && !(targetsFound && waitOnce)) {
+        maxIntervals -= 1;
+        setTimeout(function () {
+            waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, maxIntervals);
+        }, interval);
     }
 }
 
