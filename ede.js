@@ -113,8 +113,8 @@ function getDanmaku(is_auto, data) {
         anime = data['Items'][0]['Name']
         episode = 'movie'
     }
-    _name_key = '_anime_name_rel_' + _id
-    _id_key = '_anime_id_rel_' + _id
+    var _name_key = '_anime_name_rel_' + _id
+    var _id_key = '_anime_id_rel_' + _id
     if (window.localStorage.getItem(_id_key)) {
         anime_id = window.localStorage.getItem(_id_key)
     }
