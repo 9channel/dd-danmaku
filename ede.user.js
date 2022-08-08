@@ -7,8 +7,8 @@
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @updateURL    https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku/ede.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku/ede.js
+// @updateURL    https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js
+// @downloadURL  https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js
 // @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.canvas.min.js
 // @require      https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js
 // @match        */web/index.html
