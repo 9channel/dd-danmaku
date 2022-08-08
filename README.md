@@ -3,7 +3,7 @@ Emby danmaku extension
 
 ## 安装
 1. [Tampermonkey](https://www.tampermonkey.net/)
-2. [添加脚本](https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/ede.js)
+2. [添加脚本](https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js)
 3. ~~修改@match, 将```https://192.168.100.10:8096/web/index.html```改成你的服务器域名或ip~~ 当前版本已不再需要修改
 
 ## TODO
