@@ -13,7 +13,6 @@
 // @require      https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js
 // @match        */web/index.html
 // ==/UserScript==
-
 // ------config start------
 //中文简繁转换。0-不转换，1-转换为简体，2-转换为繁体。
 var chConvert = 1
