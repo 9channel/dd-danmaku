@@ -23,3 +23,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
         keep_files: true
+    - name: Purge CDN cache
+      run: |
+        curl https://purge.jsdelivr.net/gh/RyoLee/emby-danmaku/ede.js
+        curl https://purge.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js
