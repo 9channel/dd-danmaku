@@ -3,7 +3,7 @@
 // @description  鼠鼠怕不是要生气嘞!
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.0
+// @version      1.1
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -29,11 +29,12 @@ var video_container
 var is_new_video = true
 
 function initButton() {
-    var parent = document.querySelector("div[class='videoOsd-endsAtText']").parentNode
+    console.log("正在初始化UI")
+    var parent = $(".videoOsd-centerButtons").parent()
     var menubar = document.createElement("div");//创建父div
     menubar.className = "flex align-items-center flex-direction-row videoOsd-centerButtons videoOsd-centerButtons-autolayout"
     menubar.id = "danmakuCtr"
-    parent.appendChild(menubar)
+    parent.append(menubar)
     var danmakuDisplay = document.createElement('button', {
         class: 'btnGuide hide paper-icon-button-light icon-button-conditionalfocuscolor',
         is: 'paper-icon-button-light'
@@ -135,7 +136,8 @@ function getDanmaku(is_auto, data) {
         searchUrl = "https://api.acplay.net/api/v2/search/episodes?anime=" + anime + "&withRelated=true&episode=" + episode
     }
     $.getJSON(searchUrl, function (data) {
-        console.log("查询成功");
+        console.log("查询成功")
+        console.log(data)
         var selecAnime_id = 0
         if (anime_id != 0) {
             for (let index = 0; index < data.animes.length; index++) {
@@ -271,53 +273,38 @@ function playVideo() {
     }
 }
 
-function waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, maxIntervals) {
-    if (typeof waitOnce === "undefined") {
-        waitOnce = true;
-    }
-    if (typeof interval === "undefined") {
-        interval = 300;
-    }
-    if (typeof maxIntervals === "undefined") {
-        maxIntervals = -1;
-    }
-    var targetNodes = (typeof selectorOrFunction === "function")
-        ? selectorOrFunction()
-        : document.querySelectorAll(selectorOrFunction);
-
-    var targetsFound = targetNodes && targetNodes.length > 0;
-    if (targetsFound) {
-        targetNodes.forEach(function (targetNode) {
-            var attrAlreadyFound = "data-userscript-alreadyFound";
-            var alreadyFound = targetNode.getAttribute(attrAlreadyFound) || false;
-            if (!alreadyFound) {
-                var cancelFound = callback(targetNode);
-                if (cancelFound) {
-                    targetsFound = false;
-                }
-                else {
-                    targetNode.setAttribute(attrAlreadyFound, true);
-                }
-            }
-        });
-    }
-
-    if (maxIntervals !== 0 && !(targetsFound && waitOnce)) {
-        maxIntervals -= 1;
-        setTimeout(function () {
-            waitForKeyElements(selectorOrFunction, callback, waitOnce, interval, maxIntervals);
-        }, interval);
-    }
-}
-
 (function () {
     'use strict';
     if (document.querySelector('meta[name="application-name"]').content.toUpperCase() == 'Emby'.toUpperCase()) {
-        waitForKeyElements("div[class='videoOsd-endsAtText']", initButton)
-        waitForKeyElements("video[class='htmlvideoplayer moveUpSubtitles']", function () {
+        jQuery.fn.wait = function (func, times, interval) {
+            var _times = times || -1,
+                _interval = interval || 20,
+                _self = this,
+                _selector = this.selector,
+                _iIntervalID;
+            if (this.length) {
+                func && func.call(this);
+            } else {
+                _iIntervalID = setInterval(function () {
+                    if (!_times) {
+                        clearInterval(_iIntervalID);
+                    }
+                    _times <= 0 || _times--;
+
+                    _self = $(_selector);
+                    if (_self.length) {
+                        func && func.call(_self);
+                        clearInterval(_iIntervalID);
+                    }
+                }, _interval);
+            }
+            return this;
+        }
+        $(".videoOsd-centerButtons").wait(initButton)
+        $('video.htmlvideoplayer').wait(() => {
             video_container = document.querySelector("video[class='htmlvideoplayer moveUpSubtitles']");
             video_container.addEventListener('loadstart', loadVideo)
             video_container.addEventListener('play', playVideo)
-        })
+        });
     }
 })();
