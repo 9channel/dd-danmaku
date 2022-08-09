@@ -69,9 +69,10 @@ class EDE {
         this.search_icon = '<i class="md-icon">&#xE881;</i>'
         this.info_icon = '<i class="md-icon">&#xE88E;</i>'
         this.translate_icon = '<i class="md-icon">&#xE8E2;</i>'
-        this.is_danmaku_show = true
-        if (window.localStorage.getItem('chConvert')) {
-            this.is_danmaku_show = window.localStorage.getItem('is_danmaku_show')
+        if (window.localStorage.getItem('is_danmaku_show') == null) {
+            this.is_danmaku_show = true
+        } else {
+            this.is_danmaku_show = (window.localStorage.getItem('is_danmaku_show') === 'true')
         }
         this.danmaku = null
         this.episode_info = null
@@ -129,17 +130,13 @@ class EDE {
         menubar.appendChild(danmakuInfo)
 
         $("#displayDanmaku").click(function () {
-            if (window.ede.is_danmaku_show) {
-                console.log("隐藏弹幕")
-                window.ede.danmaku.hide()
-                window.ede.is_danmaku_show = false
-            } else {
-                console.log("显示弹幕")
-                window.ede.danmaku.show()
-                window.ede.is_danmaku_show = true
-            }
+            console.log(danmakuDisplay.getAttribute("title"))
+            window.ede.is_danmaku_show = !window.ede.is_danmaku_show
             window.localStorage.setItem('is_danmaku_show', window.ede.is_danmaku_show)
             danmakuDisplay.setAttribute("title", window.ede.is_danmaku_show ? '隐藏弹幕' : '显示弹幕')
+            if (window.ede.danmaku) {
+                window.ede.is_danmaku_show ? window.ede.danmaku.show() : window.ede.danmaku.hide()
+            }
         })
         $("#searchDanmaku").click(async function () {
             window.ede.is_new_video = false
@@ -150,8 +147,8 @@ class EDE {
             console.log("切换简繁转换")
             window.ede.chConvert = (window.ede.chConvert + 1) % 3
             window.localStorage.setItem('chConvert', window.ede.chConvert)
-            console.log(window.ede.chConverTtitle[window.ede.chConvert])
             danmakuTranslate.setAttribute("title", window.ede.chConverTtitle[window.ede.chConvert])
+            console.log(danmakuTranslate.getAttribute("title"))
         })
         $("#infoDanmaku").click(function () {
             console.log("显示当前信息")
@@ -277,7 +274,7 @@ class EDE {
                     comments: _comments,
                     engine: 'canvas'
                 })
-
+                window.ede.is_danmaku_show ? window.ede.danmaku.show() : window.ede.danmaku.hide()
                 var player_container = document.querySelector("div[class='videoPlayerContainer']")
                 new ResizeObserver(() => {
                     console.log("Resizing")
