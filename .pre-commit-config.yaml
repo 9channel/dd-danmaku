@@ -3,7 +3,6 @@ repos:
   rev: v2.7.1
   hooks:
   - id: prettier
-    args: [--config, .github/configs/.prettierrc.json]
 - repo: https://github.com/pre-commit/mirrors-eslint
   rev: v8.21.0
   hooks:
