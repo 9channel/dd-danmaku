@@ -49,6 +49,7 @@
                 this.danmaku = null;
                 this.episode_info = null;
                 this.is_new_video = true;
+                this.ob = null;
             }
         }
 
@@ -329,13 +330,19 @@
                             window.ede.is_danmaku_show
                                 ? window.ede.danmaku.show()
                                 : window.ede.danmaku.hide();
-                            var player_container = document.querySelector(
+                            var container = document.querySelector(
                                 "div[class='videoPlayerContainer']"
                             );
-                            new ResizeObserver(() => {
-                                console.log('Resizing');
-                                window.ede.danmaku.resize();
-                            }).observe(player_container);
+                            if (window.ede.ob) {
+                                window.ede.ob.unobserve(container);
+                            }
+                            window.ede.ob = new ResizeObserver(() => {
+                                if (window.ede.danmaku) {
+                                    console.log('Resizing');
+                                    window.ede.danmaku.resize();
+                                }
+                            });
+                            window.ede.ob.observe(container);
                         });
                 });
         }
