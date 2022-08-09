@@ -1,0 +1,7 @@
+{
+  "singleQuote": true,
+  "requirePragma": true,
+  "insertPragma": true,
+  "useTabs": false,
+  "semi": true
+}
