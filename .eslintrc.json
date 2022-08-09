@@ -10,6 +10,9 @@
     "eslint:recommended"
   ],
   "plugins": [],
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
   "globals": {},
   "rules": {}
 }
