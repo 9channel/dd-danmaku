@@ -2,8 +2,8 @@
   "root": true,
   "env": {
     "browser": true,
-    "node": true,
-    "amd": true
+    "amd": true,
+    "greasemonkey": true
   },
   "extends": [
     "eslint:recommended"
