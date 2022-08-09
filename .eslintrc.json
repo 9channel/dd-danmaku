@@ -4,14 +4,16 @@
   "env": {
     "browser": true,
     "amd": true,
-    "greasemonkey": true
+    "greasemonkey": true,
+    "es6": true,
+    "commonjs": true
   },
   "extends": [
     "eslint:recommended"
   ],
   "plugins": [],
   "parserOptions": {
-    "ecmaVersion": 8
+    "ecmaVersion": 2018
   },
   "globals": {},
   "rules": {}
