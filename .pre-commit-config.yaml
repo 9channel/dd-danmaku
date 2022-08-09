@@ -6,15 +6,23 @@ repos:
     types_or: [css, javascript]
 
 - repo: https://github.com/pre-commit/mirrors-eslint
-  rev: v8.1.0
+  rev: v8.21.0
   hooks:
   - id: eslint
     additional_dependencies:
-      - 'eslint@8.1.0'
-      - 'babel-eslint@10.1.0'
-      - 'eslint-import-resolver-babel-module@5.3.1'
-      - 'eslint-import-resolver-webpack@0.13.2'
-      - 'eslint-plugin-import@2.25.2'
+      - '@babel/eslint-parser@7.18.9'
+      - '@babel/preset-react@7.18.6'
+      - eslint@8.21.0
+      - eslint-config-airbnb@19.0.4
+      - eslint-config-prettier@8.5.0
+      - eslint-config-wesbos@3.0.2
+      - eslint-plugin-html@6.2.0
+      - eslint-plugin-import@2.26.0
+      - eslint-plugin-jsx-a11y@6.6.1
+      - eslint-plugin-prettier@4.2.1
+      - eslint-plugin-react@7.30.1
+      - eslint-plugin-react-hooks@4.6.0
+      - prettier@2.7.1
 
 ci:
   autofix_prs: true
