@@ -3,15 +3,13 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true
+    "es6": true,
+    "amd": true
   },
   "extends": [
     "eslint:recommended"
   ],
   "plugins": [],
-  "parserOptions": {
-    "ecmaVersion": 8
-  },
   "globals": {},
   "rules": {}
 }
