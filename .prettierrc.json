@@ -1,8 +1,8 @@
 {
   "singleQuote": true,
-  "requirePragma": true,
-  "insertPragma": true,
+  "requirePragma": false,
+  "insertPragma": false,
   "useTabs": false,
-  "tabWidth": 4,
+  "tabWidth": 2,
   "semi": true
 }
