@@ -13,7 +13,8 @@
   ],
   "plugins": [],
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2018,
+    "requireConfigFile": false
   },
   "globals": {},
   "rules": {}
