@@ -275,7 +275,7 @@
                 });
         }
 
-        async function createDanmaku(comments) {
+        function createDanmaku(comments) {
             if (window.ede.danmaku != null) {
                 window.ede.danmaku.clear();
                 window.ede.danmaku.destroy();
@@ -308,19 +308,27 @@
                 console.log('正在重新加载,请稍后再试');
                 return;
             }
+            window.ede.reloading = true;
             getEpisodeInfo(type != 'search')
                 .then((info) => {
                     return new Promise((resolve, reject) => {
-                        if (type == 'check' && window.ede.danmaku && window.ede.episode_info.episodeId == info.episodeId) {
-                            reject();
+                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info.episodeId == info.episodeId) {
+                            reject('当前播放视频未变动');
                         } else {
                             window.ede.episode_info = info;
                             resolve(info.episodeId);
                         }
                     });
                 })
-                .then((episodeId) => getComments(episodeId))
-                .then((comments) => createDanmaku(comments));
+                .then(
+                    (episodeId) => getComments(episodeId).then((comments) => createDanmaku(comments)),
+                    (msg) => {
+                        console.log(msg);
+                    }
+                )
+                .then(() => {
+                    window.ede.reloading = false;
+                });
         }
 
         function bilibiliParser($obj) {
