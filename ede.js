@@ -103,6 +103,10 @@
         }
 
         function translateButtonClick() {
+            if (window.ede.reloading) {
+                console.log('正在重新加载,请稍后再试');
+                return;
+            }
             console.log('切换简繁转换');
             window.ede.chConvert = (window.ede.chConvert + 1) % 3;
             window.localStorage.setItem('chConvert', window.ede.chConvert);
