@@ -151,6 +151,7 @@
             let parent = document.querySelector(uiQueryStr).parentNode;
             let menubar = document.createElement('div');
             menubar.id = 'danmakuCtr';
+            menubar.style.opacity = 0.5;
             parent.append(menubar);
             // 弹幕开关
             displayButtonOpts.innerText = danmaku_icon[window.ede.danmakuSwitch];
@@ -328,6 +329,9 @@
                 )
                 .then(() => {
                     window.ede.reloading = false;
+                    if (document.getElementById('danmakuCtr').style.opacity != 1) {
+                        document.getElementById('danmakuCtr').style.opacity = 1;
+                    }
                 });
         }
 
