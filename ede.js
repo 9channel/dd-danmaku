@@ -130,6 +130,9 @@
             let container = document.querySelector(mediaQueryStr);
             // 页面未加载
             if (!container) {
+                if (window.ede.episode_info) {
+                    window.ede.episode_info = null;
+                }
                 return;
             }
             // 已初始化
@@ -317,7 +320,7 @@
             getEpisodeInfo(type != 'search')
                 .then((info) => {
                     return new Promise((resolve, reject) => {
-                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info.episodeId == info.episodeId) {
+                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info && window.ede.episode_info.episodeId == info.episodeId) {
                             reject('当前播放视频未变动');
                         } else {
                             window.ede.episode_info = info;
