@@ -3,7 +3,7 @@
 // @description  Emby弹幕插件
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.5
+// @version      1.6
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -103,6 +103,10 @@
         }
 
         function translateButtonClick() {
+            if (window.ede.reloading) {
+                console.log('正在重新加载,请稍后再试');
+                return;
+            }
             console.log('切换简繁转换');
             window.ede.chConvert = (window.ede.chConvert + 1) % 3;
             window.localStorage.setItem('chConvert', window.ede.chConvert);
@@ -126,6 +130,9 @@
             let container = document.querySelector(mediaQueryStr);
             // 页面未加载
             if (!container) {
+                if (window.ede.episode_info) {
+                    window.ede.episode_info = null;
+                }
                 return;
             }
             // 已初始化
@@ -313,7 +320,7 @@
             getEpisodeInfo(type != 'search')
                 .then((info) => {
                     return new Promise((resolve, reject) => {
-                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info.episodeId == info.episodeId) {
+                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info && window.ede.episode_info.episodeId == info.episodeId) {
                             reject('当前播放视频未变动');
                         } else {
                             window.ede.episode_info = info;
