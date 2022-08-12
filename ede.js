@@ -135,10 +135,10 @@
                 }
                 return;
             }
-            // 已初始化
             if (!container.getAttribute('ede_listening')) {
                 console.log('正在初始化Listener');
                 container.setAttribute('ede_listening', true);
+                reloadDanmaku();
                 container.addEventListener('play', reloadDanmaku);
                 console.log('Listener初始化完成');
             }
@@ -313,7 +313,7 @@
 
         function reloadDanmaku(type = 'check') {
             if (window.ede.reloading) {
-                console.log('正在重新加载,请稍后再试');
+                console.log('正在重新加载');
                 return;
             }
             window.ede.reloading = true;
