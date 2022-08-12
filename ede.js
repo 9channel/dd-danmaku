@@ -138,7 +138,6 @@
             if (!container.getAttribute('ede_listening')) {
                 console.log('正在初始化Listener');
                 container.setAttribute('ede_listening', true);
-                reloadDanmaku();
                 container.addEventListener('play', reloadDanmaku);
                 console.log('Listener初始化完成');
             }
