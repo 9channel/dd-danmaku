@@ -1,28 +1,27 @@
 # emby-danmaku
 
-Emby danmaku extension
+## Emby danmaku extension
 ![截图](https://s1.ax1x.com/2022/08/09/vltmKs.png)
 
 ## 安装
 
-任意一种方式安装即可
+任选以下一种方式安装即可
 
-### 浏览器方式(推荐)
+### 浏览器插件(推荐)
 
 1. [Tampermonkey](https://www.tampermonkey.net/)
 2. [添加脚本](https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js)
-3. ~~修改@match, 将`https://192.168.100.10:8096/web/index.html`改成你的服务器域名或 ip~~ 当前版本已不再需要修改
 
-### 服务端方式
+### 修改服务端
 
-路径 /system/dashboard-ui/index.html
-在`</body>`前添加如下标签
+修改文件 /system/dashboard-ui/index.html (Docker版,其他类似),在`</body>`前添加如下标签
 
 ```
 <script src="https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js" defer></script>
 ```
+该方式安装与浏览器插件安装**可同时使用不冲突**
 
-### 客户端方式
+### 修改客户端
 
 类似服务端方式,解包后修改 dashboard-ui/index.html 再重新打包即可,iOS 需要通过类似 AltStore 方式自签,请自行 Google 解决
 
@@ -35,19 +34,26 @@ Emby danmaku extension
 - 简繁转换
 - 弹幕信息(触发右下角消息)
 
-## 补充说明
+若按钮透明度与"暂停"等其他原始按钮存在差异,说明插件正在进行加载
 
-弹幕来源为弹弹 play 已开启弹幕聚合(A/B/C 站等弹幕融合)
+*请注意Readme封头截图可能与最新版存在差异,请以实际版本与说明为准*
 
-因播放文件在 emby 中与上游弹弹 play 的名称可能存在不同(如"彻夜之歌"<–>“夜曲”),或因为存在多季/剧场版/OVA 导致搜索匹配错误,首次播放时请检查当前弹幕信息是否正确匹配,若匹配错误可尝试手动匹配
+## 弹幕
+
+弹幕来源为 [弹弹 play](https://www.dandanplay.com/) ,已开启弹幕聚合(A/B/C 站等网站弹幕融合)
+
+## 数据
 
 匹配完成后对应关系会保存在浏览器本地存储中,后续播放(包括同季的其他集)会优先按照保存的匹配记录载入弹幕
 
-## TODO
+## 常见弹幕加载错误/失败原因
 
-- [x] ~~跨域问题: 现阶段通过 GM_xmlhttpRequest 实现,一些支持 js 插件的手机浏览器如果不支持插件跨域将无法使用,需等待上游 API 支持 CORS~~ 已通过 cloudflare work 绕过
-- [ ] 重试机制优化
+1. 译名导致的异常: 如『よふかしのうた』 Emby 识别为《彻夜之歌》后因为弹弹 play 中为《夜曲》导致无法匹配
+2. 存在多季/剧场版/OVA 等导致的异常: 如『OVERLORD』第四季若使用S[N]格式归档(如OVERLORD文件夹下S4E1.mkv),在早期版本中可能会错误匹配为其他季如『OVERLORD II』,当前版本无法匹配(当前自动使用关键字为"OVERLORD第4季",无法通过API命中『OVERLORD IV』)
+3. 其他加载BUG: ~~鉴定为后端程序猿不会前端还要硬写JS~~,有问题麻烦 [开个issue](https://github.com/RyoLee/emby-danmaku/issues/new/choose) THX
 
-## 参考
+**首次播放时请检查当前弹幕信息是否正确匹配,若匹配错误请尝试手动匹配**
 
-https://github.com/susundingkai/emby-danmaku
+## Star History
+
+![Star History Chart](https://api.star-history.com/svg?repos=RyoLee/emby-danmaku&type=Timeline)
