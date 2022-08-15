@@ -257,7 +257,12 @@
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
-            let animaInfo = await fetch(searchUrl).then((response) => response.json());
+            let animaInfo = await fetch(searchUrl)
+                .then((response) => response.json())
+                .catch((error) => {
+                    console.log('查询失败:', error);
+                    return null;
+                });
             console.log('查询成功');
             console.log(animaInfo);
             let selecAnime_id = 1;
@@ -297,10 +302,17 @@
                 .then((data) => {
                     console.log('弹幕加载成功: ' + data.comments.length);
                     return data.comments;
+                })
+                .catch((error) => {
+                    console.log('获取弹幕失败:', error);
+                    return null;
                 });
         }
 
         function createDanmaku(comments) {
+            if (!comments) {
+                return;
+            }
             if (window.ede.danmaku != null) {
                 window.ede.danmaku.clear();
                 window.ede.danmaku.destroy();
