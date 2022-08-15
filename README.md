@@ -1,7 +1,7 @@
 # emby-danmaku
 
 ## Emby danmaku extension
-![截图](https://s1.ax1x.com/2022/08/09/vltmKs.png)
+![截图](https://raw.githubusercontent.com/RyoLee/emby-danmaku/res/S0.png)
 
 ## 安装
 
@@ -29,14 +29,14 @@
 
 左下方新增 4 个按钮,分别为
 
-- 弹幕开关
-- 手动匹配
-- 简繁转换
-- 弹幕信息(触发右下角消息)
+- 弹幕开关: 切换弹幕显示/隐藏状态
+- 手动匹配: 手动输入信息匹配弹幕
+- 简繁转换: 在原始弹幕/简体中文/繁体中文3种模式切换
+- 弹幕信息: 通过通知(以及后台log)显示当前匹配弹幕信息
 
 若按钮透明度与"暂停"等其他原始按钮存在差异,说明插件正在进行加载
 
-*请注意Readme封头截图可能与最新版存在差异,请以实际版本与说明为准*
+*请注意Readme截图可能与最新版存在差异,请以实际版本与说明为准*
 
 ## 弹幕
 
@@ -50,7 +50,7 @@
 
 1. 译名导致的异常: 如『よふかしのうた』 Emby 识别为《彻夜之歌》后因为弹弹 play 中为《夜曲》导致无法匹配
 2. 存在多季/剧场版/OVA 等导致的异常: 如『OVERLORD』第四季若使用S[N]格式归档(如OVERLORD文件夹下S4E1.mkv),在早期版本中可能会错误匹配为其他季如『OVERLORD II』,当前版本无法匹配(当前自动使用关键字为"OVERLORD第4季",无法通过API命中『OVERLORD IV』)
-3. 其他加载BUG: ~~鉴定为后端程序猿不会前端还要硬写JS~~,有问题麻烦 [开个issue](https://github.com/RyoLee/emby-danmaku/issues/new/choose) THX
+3. 其他加载BUG: ~~鉴定为后端程序猿不会前端还要硬写JS~~,有BUG麻烦 [开个issue](https://github.com/RyoLee/emby-danmaku/issues/new/choose) THX
 
 **首次播放时请检查当前弹幕信息是否正确匹配,若匹配错误请尝试手动匹配**
 
