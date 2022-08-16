@@ -243,6 +243,12 @@
             }
             let _id_key = '_anime_id_rel_' + _id;
             let _name_key = '_anime_name_rel_' + _id;
+            let _episode_key = '_episode_id_rel_' + _id + '_' + episode;
+            if (is_auto) {
+                if (window.localStorage.getItem(_episode_key)) {
+                    return JSON.parse(window.localStorage.getItem(_episode_key));
+                }
+            }
             if (window.localStorage.getItem(_id_key)) {
                 anime_id = window.localStorage.getItem(_id_key);
             }
@@ -292,6 +298,7 @@
                 animeTitle: animaInfo.animes[selecAnime_id].animeTitle,
                 episodeTitle: animaInfo.animes[selecAnime_id].type == 'tvseries' ? animaInfo.animes[selecAnime_id].episodes[episode].episodeTitle : null,
             };
+            window.localStorage.setItem(_episode_key, JSON.stringify(episodeInfo));
             return episodeInfo;
         }
 
