@@ -99,7 +99,7 @@
         };
 
         const filterButtonOpts = {
-            title: '过滤弹幕(下次加载生效)',
+            title: '过滤等级(下次加载生效)',
             id: 'filteringDanmaku',
             innerText: null,
             onclick: () => {
