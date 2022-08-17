@@ -190,11 +190,11 @@
             // 简繁转换
             translateButtonOpts.title = chConverTtitle[window.ede.chConvert];
             menubar.appendChild(createButton(translateButtonOpts));
-            // 弹幕信息
-            menubar.appendChild(createButton(infoButtonOpts));
             // 屏蔽等级
             filterButtonOpts.innerText = filter_icons[parseInt(window.localStorage.getItem('danmakuFilterLevel') ? window.localStorage.getItem('danmakuFilterLevel') : 0)];
             menubar.appendChild(createButton(filterButtonOpts));
+            // 弹幕信息
+            menubar.appendChild(createButton(infoButtonOpts));
             console.log('UI初始化完成');
         }
 
