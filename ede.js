@@ -3,7 +3,7 @@
 // @description  Emby弹幕插件
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.7
+// @version      1.8
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -20,10 +20,11 @@
         const check_interval = 200;
         const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
         // 0:当前状态关闭 1:当前状态打开
-        const danmaku_icon = ['\uE0B9', '\uE7A2'];
+        const danmaku_icons = ['\uE0B9', '\uE7A2'];
         const search_icon = '\uE881';
         const translate_icon = '\uE927';
         const info_icon = '\uE0E0';
+        const filter_icons = ['\uE3E0', '\uE3D0', '\uE3D1', '\uE3D2'];
         const buttonOptions = {
             class: 'paper-icon-button-light',
             is: 'paper-icon-button-light',
@@ -43,7 +44,7 @@
                 console.log('切换弹幕开关');
                 window.ede.danmakuSwitch = (window.ede.danmakuSwitch + 1) % 2;
                 window.localStorage.setItem('danmakuSwitch', window.ede.danmakuSwitch);
-                document.querySelector('#displayDanmaku').children[0].innerText = danmaku_icon[window.ede.danmakuSwitch];
+                document.querySelector('#displayDanmaku').children[0].innerText = danmaku_icons[window.ede.danmakuSwitch];
                 if (window.ede.danmaku) {
                     window.ede.danmakuSwitch == 1 ? window.ede.danmaku.show() : window.ede.danmaku.hide();
                 }
@@ -97,6 +98,18 @@
             },
         };
 
+        const filterButtonOpts = {
+            title: '过滤等级(下次加载生效)',
+            id: 'filteringDanmaku',
+            innerText: null,
+            onclick: () => {
+                console.log('切换弹幕过滤等级');
+                let level = window.localStorage.getItem('danmakuFilterLevel');
+                level = ((level ? parseInt(level) : 0) + 1) % 4;
+                window.localStorage.setItem('danmakuFilterLevel', level);
+                document.querySelector('#filteringDanmaku').children[0].innerText = filter_icons[level];
+            },
+        };
         // ------ configs end------
         /* eslint-disable */
         /* https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.canvas.min.js */
@@ -170,13 +183,16 @@
             }
             parent.append(menubar);
             // 弹幕开关
-            displayButtonOpts.innerText = danmaku_icon[window.ede.danmakuSwitch];
+            displayButtonOpts.innerText = danmaku_icons[window.ede.danmakuSwitch];
             menubar.appendChild(createButton(displayButtonOpts));
             // 手动匹配
             menubar.appendChild(createButton(searchButtonOpts));
             // 简繁转换
             translateButtonOpts.title = chConverTtitle[window.ede.chConvert];
             menubar.appendChild(createButton(translateButtonOpts));
+            // 屏蔽等级
+            filterButtonOpts.innerText = filter_icons[parseInt(window.localStorage.getItem('danmakuFilterLevel') ? window.localStorage.getItem('danmakuFilterLevel') : 0)];
+            menubar.appendChild(createButton(filterButtonOpts));
             // 弹幕信息
             menubar.appendChild(createButton(infoButtonOpts));
             console.log('UI初始化完成');
@@ -243,6 +259,12 @@
             }
             let _id_key = '_anime_id_rel_' + _id;
             let _name_key = '_anime_name_rel_' + _id;
+            let _episode_key = '_episode_id_rel_' + _id + '_' + episode;
+            if (is_auto) {
+                if (window.localStorage.getItem(_episode_key)) {
+                    return JSON.parse(window.localStorage.getItem(_episode_key));
+                }
+            }
             if (window.localStorage.getItem(_id_key)) {
                 anime_id = window.localStorage.getItem(_id_key);
             }
@@ -257,7 +279,12 @@
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
-            let animaInfo = await fetch(searchUrl).then((response) => response.json());
+            let animaInfo = await fetch(searchUrl)
+                .then((response) => response.json())
+                .catch((error) => {
+                    console.log('查询失败:', error);
+                    return null;
+                });
             console.log('查询成功');
             console.log(animaInfo);
             let selecAnime_id = 1;
@@ -287,6 +314,7 @@
                 animeTitle: animaInfo.animes[selecAnime_id].animeTitle,
                 episodeTitle: animaInfo.animes[selecAnime_id].type == 'tvseries' ? animaInfo.animes[selecAnime_id].episodes[episode].episodeTitle : null,
             };
+            window.localStorage.setItem(_episode_key, JSON.stringify(episodeInfo));
             return episodeInfo;
         }
 
@@ -295,18 +323,26 @@
             return fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log('弹幕加载成功: ' + data.comments.length);
+                    console.log('弹幕下载成功: ' + data.comments.length);
                     return data.comments;
+                })
+                .catch((error) => {
+                    console.log('获取弹幕失败:', error);
+                    return null;
                 });
         }
 
         function createDanmaku(comments) {
+            if (!comments) {
+                return;
+            }
             if (window.ede.danmaku != null) {
                 window.ede.danmaku.clear();
                 window.ede.danmaku.destroy();
                 window.ede.danmaku = null;
             }
-            let _comments = danmakuParser(comments);
+            let _comments = danmakuFilter(danmakuParser(comments));
+            console.log('弹幕加载成功: ' + _comments.length);
             let _container = document.querySelector(mediaContainerQueryStr);
             let _media = document.querySelector(mediaQueryStr);
             window.ede.danmaku = new Danmaku({
@@ -366,6 +402,38 @@
                         document.getElementById('danmakuCtr').style.opacity = 1;
                     }
                 });
+        }
+
+        function danmakuFilter(comments) {
+            let level = parseInt(window.localStorage.getItem('danmakuFilterLevel') ? window.localStorage.getItem('danmakuFilterLevel') : 0);
+            if (level == 0) {
+                return comments;
+            }
+            let limit = 9 - level * 2;
+            let vertical_limit = 6;
+            let arr_comments = [];
+            let vertical_comments = [];
+            for (let index = 0; index < comments.length; index++) {
+                let element = comments[index];
+                let i = Math.ceil(element.time);
+                let i_v = Math.ceil(element.time / 3);
+                if (!arr_comments[i]) {
+                    arr_comments[i] = [];
+                }
+                if (!vertical_comments[i_v]) {
+                    vertical_comments[i_v] = [];
+                }
+                // TODO: 屏蔽过滤
+                if (vertical_comments[i_v].length < vertical_limit) {
+                    vertical_comments[i_v].push(element);
+                } else {
+                    element.mode = 'rtl';
+                }
+                if (arr_comments[i].length < limit) {
+                    arr_comments[i].push(element);
+                }
+            }
+            return arr_comments.flat();
         }
 
         function danmakuParser($obj) {
