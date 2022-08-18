@@ -250,7 +250,7 @@
                 episode = item.IndexNumber;
                 let session = item.ParentIndexNumber;
                 if (session != 1) {
-                    animeName += '第' + session + '季';
+                    animeName += ' ' + session;
                 }
             } else {
                 _id = item.Id;
