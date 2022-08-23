@@ -394,7 +394,7 @@
                         if (msg) {
                             console.log(msg);
                         }
-                    }
+                    },
                 )
                 .then(() => {
                     window.ede.loading = false;
