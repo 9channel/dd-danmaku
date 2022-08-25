@@ -398,13 +398,13 @@
                         getComments(episodeId).then((comments) =>
                             createDanmaku(comments).then(() => {
                                 console.log('弹幕就位');
-                            })
+                            }),
                         ),
                     (msg) => {
                         if (msg) {
                             console.log(msg);
                         }
-                    }
+                    },
                 )
                 .then(() => {
                     window.ede.loading = false;
