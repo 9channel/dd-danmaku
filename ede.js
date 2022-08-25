@@ -332,7 +332,7 @@
                 });
         }
 
-        function createDanmaku(comments) {
+        async function createDanmaku(comments) {
             if (!comments) {
                 return;
             }
@@ -343,6 +343,11 @@
             }
             let _comments = danmakuFilter(danmakuParser(comments));
             console.log('弹幕加载成功: ' + _comments.length);
+
+            while (!document.querySelector(mediaContainerQueryStr)) {
+                await new Promise((resolve) => setTimeout(resolve, 200));
+            }
+
             let _container = document.querySelector(mediaContainerQueryStr);
             let _media = document.querySelector(mediaQueryStr);
             window.ede.danmaku = new Danmaku({
@@ -389,7 +394,12 @@
                     });
                 })
                 .then(
-                    (episodeId) => getComments(episodeId).then((comments) => createDanmaku(comments)),
+                    (episodeId) =>
+                        getComments(episodeId).then((comments) =>
+                            createDanmaku(comments).then(() => {
+                                console.log('弹幕就位');
+                            }),
+                        ),
                     (msg) => {
                         if (msg) {
                             console.log(msg);
