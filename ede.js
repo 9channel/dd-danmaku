@@ -275,7 +275,7 @@
                 animeName = prompt('确认动画名:', animeName);
             }
 
-            let searchUrl = 'https://api.acplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
+            let searchUrl = 'https://api.dandanplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
@@ -319,7 +319,7 @@
         }
 
         function getComments(episodeId) {
-            let url = 'https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/' + episodeId + '?withRelated=true&chConvert=' + window.ede.chConvert;
+            let url = 'https://api.xn--7ovq92diups1e.com/cors/https://api.dandanplay.net/api/v2/comment/' + episodeId + '?withRelated=true&chConvert=' + window.ede.chConvert;
             return fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
