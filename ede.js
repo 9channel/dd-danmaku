@@ -3,7 +3,7 @@
 // @description  Emby弹幕插件
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.8
+// @version      1.9
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -250,7 +250,7 @@
                 episode = item.IndexNumber;
                 let session = item.ParentIndexNumber;
                 if (session != 1) {
-                    animeName += '第' + session + '季';
+                    animeName += ' ' + session;
                 }
             } else {
                 _id = item.Id;
@@ -275,7 +275,7 @@
                 animeName = prompt('确认动画名:', animeName);
             }
 
-            let searchUrl = 'https://api.acplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
+            let searchUrl = 'https://api.dandanplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
@@ -319,7 +319,7 @@
         }
 
         function getComments(episodeId) {
-            let url = 'https://api.xn--7ovq92diups1e.com/cors/https://api.acplay.net/api/v2/comment/' + episodeId + '?withRelated=true&chConvert=' + window.ede.chConvert;
+            let url = 'https://api.xn--7ovq92diups1e.com/cors/https://api.dandanplay.net/api/v2/comment/' + episodeId + '?withRelated=true&chConvert=' + window.ede.chConvert;
             return fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
@@ -394,7 +394,7 @@
                         if (msg) {
                             console.log(msg);
                         }
-                    }
+                    },
                 )
                 .then(() => {
                     window.ede.loading = false;

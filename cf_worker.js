@@ -1,4 +1,4 @@
-const hostlist = { 'api.acplay.net': null };
+const hostlist = { 'api.dandanplay.net': null };
 
 async function handleRequest(request) {
     const urlObj = new URL(request.url);
