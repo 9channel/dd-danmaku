@@ -55,6 +55,5 @@
 
 **首次播放时请检查当前弹幕信息是否正确匹配,若匹配错误请尝试手动匹配**
 
-## Star History
 
-![Star History Chart](https://api.star-history.com/svg?repos=RyoLee/emby-danmaku&type=Timeline)
+[![Stargazers over time](https://starchart.cc/RyoLee/emby-danmaku.svg)](https://starchart.cc/RyoLee/emby-danmaku)
