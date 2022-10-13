@@ -204,7 +204,7 @@
             }
             console.log('正在初始化UI');
             // 弹幕按钮容器div
-            let parent = uiAnchor[0].parentNode.parentNode;
+            let parent = uiAnchor[0].parentNode.parentNode.parentNode;
             let menubar = document.createElement('div');
             menubar.id = 'danmakuCtr';
             if (!window.ede.episode_info) {
