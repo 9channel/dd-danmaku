@@ -3,7 +3,7 @@
 // @description  Emby弹幕插件
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.9
+// @version      1.10
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -167,7 +167,7 @@
         function getElementsByInnerText(tagType, innerStr, excludeChildNode = true) {
             var temp = [];
             var elements = document.getElementsByTagName(tagType);
-            if(!elements || 0==elements.length){
+            if (!elements || 0 == elements.length) {
                 return temp;
             }
             for (let index = 0; index < elements.length; index++) {
@@ -175,7 +175,6 @@
                 if (e.innerText.includes(innerStr)) {
                     temp.push(e);
                 }
-                
             }
             if (!excludeChildNode) {
                 return temp;
@@ -195,8 +194,8 @@
 
         function initUI() {
             // 页面未加载
-            let uiAnchor=getElementsByInnerText('i',uiAnchorStr);
-            if (! uiAnchor||!uiAnchor[0]) {
+            let uiAnchor = getElementsByInnerText('i', uiAnchorStr);
+            if (!uiAnchor || !uiAnchor[0]) {
                 return;
             }
             // 已初始化
