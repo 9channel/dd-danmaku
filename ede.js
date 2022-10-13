@@ -383,7 +383,7 @@
                 container: _container,
                 media: _media,
                 comments: _comments,
-                engine: 'DOM',
+                engine: 'canvas',
             });
             window.ede.danmakuSwitch == 1 ? window.ede.danmaku.show() : window.ede.danmaku.hide();
             if (window.ede.ob) {
