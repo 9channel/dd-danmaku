@@ -166,12 +166,17 @@
 
         function getElementsByInnerText(tagType, innerStr, excludeChildNode = true) {
             var temp = [];
-            elements = [...document.getElementsByTagName(tagType)];
-            elements.forEach((e) => {
+            var elements = document.getElementsByTagName(tagType);
+            if(!elements || 0==elements.length){
+                return temp;
+            }
+            for (let index = 0; index < elements.length; index++) {
+                var e = elements[index];
                 if (e.innerText.includes(innerStr)) {
                     temp.push(e);
                 }
-            });
+                
+            }
             if (!excludeChildNode) {
                 return temp;
             }
@@ -190,7 +195,8 @@
 
         function initUI() {
             // 页面未加载
-            if (!document.querySelector(uiQueryStr)) {
+            let uiAnchor=getElementsByInnerText('i',uiAnchorStr);
+            if (! uiAnchor||!uiAnchor[0]) {
                 return;
             }
             // 已初始化
@@ -199,7 +205,7 @@
             }
             console.log('正在初始化UI');
             // 弹幕按钮容器div
-            let parent = document.querySelector(uiQueryStr).parentNode;
+            let parent = uiAnchor[0].parentNode.parentNode;
             let menubar = document.createElement('div');
             menubar.id = 'danmakuCtr';
             if (!window.ede.episode_info) {
