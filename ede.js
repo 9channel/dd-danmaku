@@ -308,7 +308,14 @@
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
-            let animaInfo = await fetch(searchUrl)
+            let animaInfo = await fetch(searchUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept-Encoding': 'gzip',
+                    Accept: 'application/json',
+                    'User-Agent': navigator.userAgent,
+                },
+            })
                 .then((response) => response.json())
                 .catch((error) => {
                     console.log('查询失败:', error);
@@ -349,7 +356,14 @@
 
         function getComments(episodeId) {
             let url = 'https://api.xn--7ovq92diups1e.com/cors/https://api.dandanplay.net/api/v2/comment/' + episodeId + '?withRelated=true&chConvert=' + window.ede.chConvert;
-            return fetch(url)
+            return fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept-Encoding': 'gzip',
+                    Accept: 'application/json',
+                    'User-Agent': navigator.userAgent,
+                },
+            })
                 .then((response) => response.json())
                 .then((data) => {
                     console.log('弹幕下载成功: ' + data.comments.length);
