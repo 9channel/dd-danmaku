@@ -1,12 +1,12 @@
 {
-  "singleQuote": true,
-  "requirePragma": false,
-  "insertPragma": false,
-  "useTabs": false,
-  "tabWidth": 4,
-  "semi": true,
-  "proseWrap": "preserve",
-  "endOfLine": "lf",
-  "printWidth": 180,
-  "trailingComma": "all"
+    "singleQuote": true,
+    "requirePragma": false,
+    "insertPragma": false,
+    "useTabs": false,
+    "tabWidth": 4,
+    "semi": true,
+    "proseWrap": "preserve",
+    "endOfLine": "lf",
+    "printWidth": 180,
+    "trailingComma": "all"
 }

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "es6",
+        "moduleResolution": "node",
+        "declaration": false,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "preserve",
+        "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ESNext"]
+    },
+    "include": ["src/**/*"]
+}

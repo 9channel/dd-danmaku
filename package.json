@@ -1,0 +1,33 @@
+{
+    "name": "emby-danmaku",
+    "version": "1.11.0",
+    "description": "Emby danmaku extension",
+    "keywords": [
+        "emby",
+        "plugin",
+        "danmaku"
+    ],
+    "author": "RyoLee",
+    "contact": "https://github.com/RyoLee",
+    "license": "MIT",
+    "private": true,
+    "engines": {
+        "node": ">=16"
+    },
+    "scripts": {
+        "dev": "rollup -wc rollup.conf.js",
+        "clean": "del-cli dist",
+        "build:js": "rollup -c rollup.conf.js",
+        "build": "cross-env NODE_ENV=production run-s build:js"
+    },
+    "dependencies": {
+        "danmaku": "^2.0.4"
+    },
+    "devDependencies": {
+        "@gera2ld/plaid": "~2.5.6",
+        "@gera2ld/plaid-rollup": "~2.5.6",
+        "del-cli": "^5.0.0",
+        "prettier": "^2.7.1",
+        "rollup-plugin-userscript": "^0.1.1"
+    }
+}
