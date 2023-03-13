@@ -23,4 +23,10 @@ class DanDanDanmaku {
         this.config[k] = v;
         window.localStorage.setItem(configName, JSON.stringify(this.config));
     }
+    init() {
+        if (!window.ddd) {
+            // 理论永远不应进入该case
+            throw this.locales.exception.not_init;
+        }
+    }
 }
