@@ -8,8 +8,8 @@ assignees: ''
 
 **Version**
 
-- emby version.
-- emby-danmaku version.
+- emby/jellyfin version and client type(etc. web,android, ios).
+- dd-danmaku version.
 
 **Describe the bug**
 

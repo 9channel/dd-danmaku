@@ -4,7 +4,7 @@ const userscript = require('rollup-plugin-userscript');
 const pkg = require('./package.json');
 
 const DIST = 'dist';
-const FILENAME = 'ede';
+const FILENAME = 'ddd';
 
 const bundleOptions = {
     extend: true,
@@ -56,7 +56,7 @@ rollupConfig.forEach((item) => {
     item.output = {
         indent: false,
         // If set to false, circular dependencies and live bindings for external imports won't work
-        externalLiveBindings: true,
+        externalLiveBindings: false,
         ...item.output,
     };
 });

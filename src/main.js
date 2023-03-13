@@ -1,8 +1,25 @@
-import './style.css';
-import './utils.js';
+import './assets/style/default.css';
+import './utils';
+import './components/status';
 import Danmaku from 'danmaku';
 
-"use strict";
-
-console.log(styles.title)
-//console.log(Danmaku)
+if (isEmby()) {
+    (async function () {
+        while (!window.require) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+        if (!window.ede) {
+            window.ede = new EDE();
+            setInterval(() => {
+                initUI();
+            }, check_interval);
+            while (!(await getEmbyItemInfo())) {
+                await new Promise((resolve) => setTimeout(resolve, 200));
+            }
+            reloadDanmaku('init');
+            setInterval(() => {
+                initListener();
+            }, check_interval);
+        }
+    })();
+}

@@ -1,7 +1,7 @@
 {
-    "name": "emby-danmaku",
+    "name": "dd-danmaku",
     "version": "1.11.0",
-    "description": "Emby danmaku extension",
+    "description": "Danmaku extension",
     "keywords": [
         "emby",
         "plugin",
