@@ -1,15 +1,16 @@
 import './assets/style/default.css';
-import './utils';
-import { DanDanDanmaku as DDD } from './components/DanDanDanmaku';
+import tryClient from './clients';
+import DanDanDanmaku from './components/DanDanDanmaku';
+import translate from './locales';
 
-if (isEmby()) {
-    (async function () {
-        while (!window.require) {
-            await new Promise((resolve) => setTimeout(resolve, 200));
-        }
-        if (!window.ddd) {
-            window.ddd = new DDD();
-            window.ddd.init();
-        }
-    })();
-}
+const locales = translate(window);
+const client = tryClient(document, locales);
+(async function () {
+    while (!window.require) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    if (!window.ddd) {
+        window.ddd = new DanDanDanmaku(client, locales);
+        window.ddd.init();
+    }
+})();
