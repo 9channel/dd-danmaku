@@ -1,6 +1,6 @@
 import './assets/style/default.css';
 import './utils';
-import './components/status';
+import { DanDanDanmaku as DDD } from './components/DanDanDanmaku';
 import Danmaku from 'danmaku';
 
 if (isEmby()) {
@@ -8,8 +8,8 @@ if (isEmby()) {
         while (!window.require) {
             await new Promise((resolve) => setTimeout(resolve, 200));
         }
-        if (!window.ede) {
-            window.ede = new EDE();
+        if (!window.ddd) {
+            window.ddd = new DDD();
             setInterval(() => {
                 initUI();
             }, check_interval);
