@@ -13,4 +13,3 @@ const buttonOptions = {
 const uiAnchorStr = '\uE034';
 const mediaContainerQueryStr = "div[data-type='video-osd']";
 const mediaQueryStr = 'video';
-const configName = 'ddconfig';

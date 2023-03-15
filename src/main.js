@@ -1,16 +1,17 @@
 import './assets/style/default.css';
-import tryClient from './clients';
-import DanDanDanmaku from './components/DanDanDanmaku';
+import client from './clients';
+import DanDanDanmaku from './commons/DanDanDanmaku';
 import translate from './locales';
+import initAllTimer from './timers';
 
-const locales = translate(window);
-const client = tryClient(document, locales);
+const _locales = translate(window);
+const _client = client(document, _locales);
 (async function () {
     while (!window.require) {
         await new Promise((resolve) => setTimeout(resolve, 200));
     }
     if (!window.ddd) {
-        window.ddd = new DanDanDanmaku(client, locales);
-        window.ddd.init();
+        window.ddd = new DanDanDanmaku(_client, _locales);
+        initAllTimer();
     }
 })();

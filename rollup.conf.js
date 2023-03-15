@@ -16,6 +16,7 @@ const postcssOptions = {
     inject: true,
     minimize: true,
 };
+
 const replaceOptions = {
     _VERSION: pkg.version,
     _AUTHOR: pkg.author,
@@ -31,6 +32,7 @@ const replaceAll = function (input, tarMap) {
     }
     return _t;
 };
+
 const rollupConfig = [
     {
         input: {
