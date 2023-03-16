@@ -1,7 +1,17 @@
 import * as emby from './emby';
 import * as jellyfin from './jellyfin';
 
-const client = (document,locales) => {
+class Client {
+    constructor(window, locales) {
+        this.window = window;
+        this.locales = locales;
+    }
+    init() {
+        throw locales.exception.notSupportedClient;
+    }
+}
+
+const client = (document) => {
     const { appName } = document.querySelector('meta[name="application-name"]').content;
     switch (appName) {
         case 'Emby':
@@ -9,7 +19,7 @@ const client = (document,locales) => {
         case 'Jellyfin':
             return jellyfin.default;
         default:
-            throw locales.exception.notSupportedClient;
+            return Client;
     }
 };
 export default client;

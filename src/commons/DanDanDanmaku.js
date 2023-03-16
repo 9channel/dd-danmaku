@@ -1,5 +1,4 @@
 import './constants';
-import * as timer from '../timers';
 import Danmaku from 'danmaku';
 
 const configName = 'ddconfig';

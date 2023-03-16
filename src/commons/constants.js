@@ -1,4 +1,3 @@
-const check_interval = 200;
 const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
 // 0:当前状态关闭 1:当前状态打开
 const danmaku_icons = ['\uE0B9', '\uE7A2'];

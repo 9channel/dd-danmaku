@@ -1,4 +1,5 @@
 const uiTimerKey = '_ui_watcher';
+const check_interval = 200;
 
 export default function () {
     if (!window.ddd.timers[uiTimerKey]) {
