@@ -58,22 +58,22 @@
 
 ## 鸣谢
 
-<table style="border: none;">
-  <tr style="border: none;">
-    <td style="border: none;"><a href="https://github.com/susundingkai/emby-danmaku">susundingkai/emby-danmaku</a></td>
-    <td style="border: none;">最初的参考</td>
+<table>
+  <tr>
+    <td><a href="https://github.com/susundingkai/emby-danmaku">susundingkai/emby-danmaku</a></td>
+    <td>最初的参考</td>
   </tr>
-  <tr style="border: none;">
-    <td style="border: none;"><a href="https://www.dandanplay.com">弹弹 play</a></td>
-    <td style="border: none;">对众多弹幕源进行了整合，使得本项目成为可能</td>
+  <tr>
+    <td><a href="https://www.dandanplay.com">弹弹 play</a></td>
+    <td>对众多弹幕源进行了整合，使得本项目成为可能</td>
   </tr>
-  <tr style="border: none;">
-    <td style="border: none;"><a href="https://github.com/weizhenye/Danmaku">weizhenye/Danmaku</a></td>
-    <td style="border: none;">高性能弹幕渲染引擎</td>
+  <tr>
+    <td><a href="https://github.com/weizhenye/Danmaku">weizhenye/Danmaku</a></td>
+    <td>高性能弹幕渲染引擎</td>
   </tr>
-  <tr style="border: none;">
-    <td style="border: none;"><a href="https://copilot.github.com/">Copilot</a></td>
-    <td style="border: none;">极大减轻了开发中的心智负担</td>
+  <tr>
+    <td><a href="https://copilot.github.com/">Copilot</a></td>
+    <td>极大减轻了开发中的心智负担</td>
   </tr>
 </table>
 
