@@ -1,9 +1,7 @@
-import { Client } from './index';
+import * as dc from '../default';
 
-export default class EmbyClient extends Client {
-    init(){
-
-    }
+export class EmbyClient extends dc.Client {
+    init() {}
     initUI() {
         // 页面未加载
         let uiAnchor = getElementsByInnerText('i', uiAnchorStr);
@@ -38,5 +36,15 @@ export default class EmbyClient extends Client {
         menubar.appendChild(createButton(infoButtonOpts));
         console.log('UI初始化完成');
     }
-    
+    createButton(opt) {
+        let button = document.createElement('button', buttonOptions);
+        button.setAttribute('title', opt.title);
+        button.setAttribute('id', opt.id);
+        let icon = document.createElement('span');
+        icon.className = 'md-icon';
+        icon.innerText = opt.innerText;
+        button.appendChild(icon);
+        button.onclick = opt.onclick;
+        return button;
+    }
 }

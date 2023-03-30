@@ -1,0 +1,96 @@
+# 本文件用于自动发布release和github pages
+# prettier-ignore
+name: Release
+on:
+  # 在 master 分支 push 或 pr package.json 中 version 变更时自动触发
+  push:
+    branches:
+      - master
+    paths:
+      - 'package.json'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'package.json'
+  # 手动触发
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # 只有package.json的version字段变更时才触发
+    steps:
+    # 检出代码
+    - name: Checkout
+      uses: actions/checkout@v2
+    # 对比版本号与gh-pages分支中的版本号，如果相同则不触发
+    - name: Compare version
+      id: compare_version
+      run: |
+        # 获取package.json中的version
+        version=$(jq -r .version package.json)
+        # 获取gh-pages分支中的version
+        gh_pages_version=$(curl -s https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku/ddd.user.js | grep -oP 'version: "\K.*?(?=")')
+        # 如果版本号相同则退出
+        if [ "$version" = "$gh_pages_version" ]; then
+          echo "Version is the same as gh-pages branch, exit"
+          exit 78
+        fi
+        # 将version写入output
+        echo "::set-output name=version::$version"
+        # version以beta结尾则为预览版
+        if [[ $version == *"beta"* ]]; then
+          echo "::set-output name=prerelease::true"
+        fi
+    # nodejs版本切换
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.x        
+    # 缓存 nodejs 以加快构建速度
+    - name: Cache node_modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    # 构建
+    - name: Build
+      run: |
+        # 清理旧文件
+        rm -rf dist public
+        mkdir -p dist public
+        npm install
+        npm run build
+        # 运行失败则退出
+        if [ $? -ne 0 ]; then
+          exit 1
+        fi
+        cp dist/ddd.user.js public/ddd.user.js
+    # 发布release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.compare_version.outputs.version }}
+        # release_name: 为v开头的版本号
+        release_name: v${{ steps.compare_version.outputs.version }}
+        draft: false
+        prerelease: ${{ steps.compare_version.outputs.prerelease }}
+        # 上传文件
+        assets: |
+          public/ddd.user.js
+    # 发布到 github pages
+    - name: Deploy github pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        keep_files: true
+    # 刷新 jsdelivr cdn
+    - name: Purge CDN cache
+      run: |
+        curl https://purge.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js

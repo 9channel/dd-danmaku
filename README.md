@@ -2,7 +2,7 @@
 
 ## A danmaku extension
 
-![截图](https://raw.githubusercontent.com/RyoLee/dd-danmaku/res/S0.png)
+![截图](https://raw.githubusercontent.com/RyoLee/dd-danmaku/master/S0.png)
 
 ## 安装
 
@@ -11,14 +11,14 @@
 ### 浏览器插件(推荐)
 
 1. [Tampermonkey](https://www.tampermonkey.net/)
-2. [添加脚本](https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ede.user.js)
+2. [添加脚本](https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js)
 
 ### 修改服务端
 
 修改文件 /system/dashboard-ui/index.html (Docker 版,其他类似),在`</body>`前添加如下标签
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ede.user.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js" defer></script>
 ```
 
 该方式安装与浏览器插件安装**可同时使用不冲突**
@@ -27,7 +27,7 @@
 
 ~~类似服务端方式,解包后修改 dashboard-ui/index.html 再重新打包即可,iOS 需要通过类似 AltStore 方式自签,请自行 Google 解决~~
 
-目前版本对于使用非 html 内核播放的客户端无法生效,重构中,后续会进行修复
+**目前版本对于使用非 html 内核播放的客户端无法生效,重构中,后续会进行修复**
 
 ## 界面
 
@@ -36,12 +36,9 @@
 左下方新增如下按钮,若按钮透明度与"暂停"等其他原始按钮存在差异,说明插件正在进行加载
 
 -   弹幕开关: 切换弹幕显示/隐藏状态
--   手动匹配: 手动输入信息匹配弹幕
--   简繁转换: 在原始弹幕/简体中文/繁体中文 3 种模式切换
--   过滤等级: 过滤弹幕强度,等级越高强度越大,0 级无限制\*
--   弹幕信息: 通过通知(以及后台 log)显示当前匹配弹幕信息
+-   弹幕设置: 弹出弹幕配置面板
 
-    \*_除 0 级外均带有每 3 秒 6 条的垂直方向弹幕密度限制,高于该限制密度的顶部/底部弹幕将会被转为普通弹幕_
+    
 
 ## 弹幕
 
@@ -58,5 +55,34 @@
 3. 其他加载 BUG: ~~鉴定为后端程序猿不会前端还要硬写 JS~~,有 BUG 麻烦 [开个 issue](https://github.com/RyoLee/dd-danmaku/issues/new/choose) THX
 
 **首次播放时请检查当前弹幕信息是否正确匹配,若匹配错误请尝试手动匹配**
+
+## 鸣谢
+
+<style>
+  table, th, td {
+    border: none;
+  }
+</style>
+
+<table>
+  <tr>
+    <td><a href="https://github.com/susundingkai/emby-danmaku">susundingkai/emby-danmaku</a></td>
+    <td>最初的参考</td>
+  </tr>
+  <tr>
+    <td><a href="https://www.dandanplay.com">弹弹 play</a></td>
+    <td>对众多弹幕源进行了整合，使得本项目成为可能</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/weizhenye/Danmaku">weizhenye/Danmaku</a></td>
+    <td>高性能弹幕渲染引擎</td>
+  </tr>
+  <tr>
+    <td><a href="https://copilot.github.com/">Copilot</a></td>
+    <td>极大减轻了开发中的心智负担</td>
+  </tr>
+</table>
+
+## Thanks for your STARS!
 
 [![Stargazers over time](https://starchart.cc/RyoLee/dd-danmaku.svg)](https://starchart.cc/RyoLee/dd-danmaku)
