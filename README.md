@@ -58,7 +58,7 @@
 
 ## 鸣谢
 
-| | |
+| 项目 | 说明 |
 | :--- | :--- |
 | [susundingkai/emby-danmaku](https://github.com/susundingkai/emby-danmaku) | 最初的参考 |
 | [弹弹 play](https://www.dandanplay.com) | 对众多弹幕源进行了整合，使得本项目成为可能 |
