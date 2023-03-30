@@ -58,13 +58,7 @@
 
 ## 鸣谢
 
-<style>
-  table, th, td {
-    border: none;
-  }
-</style>
-
-<table>
+<table border="0">
   <tr>
     <td><a href="https://github.com/susundingkai/emby-danmaku">susundingkai/emby-danmaku</a></td>
     <td>最初的参考</td>
