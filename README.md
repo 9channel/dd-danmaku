@@ -58,24 +58,12 @@
 
 ## 鸣谢
 
-<table>
-  <tr>
-    <td><a href="https://github.com/susundingkai/emby-danmaku">susundingkai/emby-danmaku</a></td>
-    <td>最初的参考</td>
-  </tr>
-  <tr>
-    <td><a href="https://www.dandanplay.com">弹弹 play</a></td>
-    <td>对众多弹幕源进行了整合，使得本项目成为可能</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/weizhenye/Danmaku">weizhenye/Danmaku</a></td>
-    <td>高性能弹幕渲染引擎</td>
-  </tr>
-  <tr>
-    <td><a href="https://copilot.github.com/">Copilot</a></td>
-    <td>极大减轻了开发中的心智负担</td>
-  </tr>
-</table>
+| | |
+| :--- | :--- |
+| [susundingkai/emby-danmaku](https://github.com/susundingkai/emby-danmaku) | 最初的参考 |
+| [弹弹 play](https://www.dandanplay.com) | 对众多弹幕源进行了整合，使得本项目成为可能 |
+| [weizhenye/Danmaku](https://github.com/weizhenye/Danmaku) | 高性能弹幕渲染引擎 |
+| [Copilot](https://copilot.github.com/) | 极大减轻了开发中的心智负担 |
 
 ## Thanks for your STARS!
 
