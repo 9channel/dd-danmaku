@@ -36,12 +36,12 @@ class DanDanDanmaku {
         }
 
         this.locales = translate(window);
-        this.client = new (Client(document))(window, _locales);
         this.danmaku = null;
         this.episode_info = null;
         this.ob = null;
         this.loading = false;
         this.timers = {};
+        this.client = new (Client(window, document, this))(window, _locales);
     }
     setConfig(k, v) {
         this.config[k] = v;

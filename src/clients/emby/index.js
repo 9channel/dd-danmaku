@@ -1,7 +1,10 @@
 import * as dc from '../default';
 
 export class EmbyClient extends dc.Client {
-    init() {}
+    /* 初始化入口 */
+    init() {
+        this.initWatcher();
+    }
     initUI() {
         // 页面未加载
         let uiAnchor = getElementsByInnerText('i', uiAnchorStr);
