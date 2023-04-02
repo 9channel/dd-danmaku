@@ -2,13 +2,20 @@ import './constants';
 import Danmaku from 'danmaku';
 import Client from '../clients';
 import translate from '../locales';
-
+/* 配置名称 */
 const configName = 'ddconfig';
-const baseUrl = 'https://api.xn--7ovq92diups1e.com/cors/https://api.dandanplay.net';
+/* 跨域前缀 */
+const corsUrl = 'https://api.xn--7ovq92diups1e.com/cors/';
+/* 弹弹play api */
+const baseUrl = 'https://api.dandanplay.net';
+/* 搜索api */
+const uriSearch = '/api/v2/search/';
+/* 弹幕api */
 const uriComment = '/api/v2/comment/';
 
 class DanDanDanmaku {
     constructor(window, document) {
+        /* 默认配置 */
         this.configs = {
             fontAutoSize: true,
             fontSize: 18,
@@ -42,6 +49,15 @@ class DanDanDanmaku {
         this.loading = false;
         this.timers = {};
         this.client = new (Client(window, document, this))(window, _locales);
+        /* 当前播放信息 */
+        this.mediaInfo = {
+            /* 是否为系列如番剧电视剧 */
+            isSeries: false,
+            /* 系列id */
+            seriesId: null,
+            /* 唯一id */
+            episodeId: null,
+        };
     }
     setConfig(k, v) {
         this.config[k] = v;
