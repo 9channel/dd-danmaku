@@ -17,15 +17,15 @@
  * 1. 弹幕过滤等级
  * 2. 弹幕透明度
  * 3. 简繁转换
- * 4. 弹幕字体
- * 5. 弹幕大小
+ * 4. 弹幕大小
  */
 const createSettingPanel = (document, ddd) => {
     /* 设置面板 */
     const settingPanel = document.createElement('div');
     settingPanel.id = 'settingPanel';
     settingPanel.className = 'setting-panel';
-    settingPanel.style.display = 'none';
+    /* 全屏铺满，最上层显示，默认不显示 */
+    settingPanel.style = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: none;';
     /* 设置面板-标题 */
     const settingPanelTitle = document.createElement('div');
     settingPanelTitle.className = 'setting-panel-title';
@@ -94,8 +94,40 @@ const createSettingPanel = (document, ddd) => {
     const settingPanelGlobalSetting = document.createElement('div');
     settingPanelGlobalSetting.className = 'setting-panel-global-setting';
     settingPanel.appendChild(settingPanelGlobalSetting);
-    /* global setting-弹幕过滤等级 */
-    
+    /* global setting-弹幕过滤 */
+    /**
+     * 1. 全局限制窗口，单位秒
+     * 2. 全局限制弹幕数量
+     * 3. 垂直限制窗口，单位秒
+     * 4. 垂直限制弹幕数量
+     */
+    const globalSettingFilter = document.createElement('div');
+    globalSettingFilter.className = 'global-setting-filter';
+    settingPanelGlobalSetting.appendChild(globalSettingFilter);
+    /* global setting-弹幕透明度 */
+    const globalSettingOpacity = document.createElement('div');
+    globalSettingOpacity.className = 'global-setting-opacity';
+    settingPanelGlobalSetting.appendChild(globalSettingOpacity);
+    /* global setting-简繁转换 */
+    const globalSettingConvert = document.createElement('div');
+    globalSettingConvert.className = 'global-setting-convert';
+    settingPanelGlobalSetting.appendChild(globalSettingConvert);
+    /* global setting-弹幕大小 */
+    /**
+     * 有以下模式，通过只能选择一个
+     * 1. 缩放模式
+     * 2. 固定值模式
+     */
+    const globalSettingSize = document.createElement('div');
+    globalSettingSize.className = 'global-setting-size';
+    settingPanelGlobalSetting.appendChild(globalSettingSize);
+    /* 插入到页面 */
+    document.body.appendChild(settingPanel);
+    /* 返回设置面板 */
+    return settingPanel;
+}
+
+
 
 
 

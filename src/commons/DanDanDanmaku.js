@@ -1,4 +1,4 @@
-import './constants';
+import '../clients/emby/constants';
 import Danmaku from 'danmaku';
 import Client from '../clients';
 import translate from '../locales';
@@ -64,10 +64,7 @@ class DanDanDanmaku {
         window.localStorage.setItem(configName, JSON.stringify(this.config));
     }
     init() {
-        if (!window.ddd) {
-            /* 理论永远不应进入该case */
-            throw this.locales.exception.notInit;
-        }
+        this.client.init();
     }
 
     async downloadDanmakus(episodeId) {
