@@ -38,7 +38,7 @@ jobs:
         fi
         # 将version写入output
         echo "::set-output name=version::$version"
-        # version以beta结尾则为预览版
+        # version中包含beta则设置prerelease为true
         if [[ $version == *"beta"* ]]; then
           echo "::set-output name=prerelease::true"
         fi
