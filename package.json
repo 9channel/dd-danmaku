@@ -1,33 +1,46 @@
 {
-    "name": "dd-danmaku",
-    "version": "1.11.0",
-    "description": "Danmaku extension",
-    "keywords": [
-        "emby",
-        "plugin",
-        "danmaku"
-    ],
-    "author": "RyoLee",
-    "contact": "https://github.com/RyoLee",
-    "license": "MIT",
-    "private": true,
-    "engines": {
-        "node": ">=16"
-    },
-    "scripts": {
-        "dev": "rollup -wc rollup.conf.js",
-        "clean": "del-cli dist",
-        "build:js": "rollup -c rollup.conf.js",
-        "build": "cross-env NODE_ENV=production run-s build:js"
-    },
-    "dependencies": {
-        "danmaku": "^2.0.4"
-    },
-    "devDependencies": {
-        "@gera2ld/plaid": "~2.5.6",
-        "@gera2ld/plaid-rollup": "~2.5.6",
-        "del-cli": "^5.0.0",
-        "prettier": "^2.7.1",
-        "rollup-plugin-userscript": "^0.1.1"
-    }
+  "name": "dd-danmaku",
+  "version": "2.0.0",
+  "description": "Danmaku extension",
+  "keywords": [
+    "emby",
+    "plugin",
+    "danmaku"
+  ],
+  "author": "RyoLee",
+  "contact": "https://github.com/RyoLee",
+  "license": "MIT",
+  "scripts": {
+    "dev": "rollup --config --environment BUILD:development --watch",
+    "build": "tsc && rollup --config"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.15.0",
+    "@homegrown/rollup-plugin-postcss-modules": "^2.0.2",
+    "@rollup/plugin-alias": "^3.1.8",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-image": "^2.1.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@types/quicksettings": "^3.0.1",
+    "@types/tampermonkey": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "autoprefixer": "^10.3.7",
+    "core-js": "3.18.3",
+    "postcss": "^8.3.11",
+    "rollup": "^2.58.0",
+    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-svg-to-symbol": "^1.0.0",
+    "rollup-plugin-tampermonkey-header": "^0.1.6",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@rollup/plugin-babel": "^5.3.0",
+    "danmaku": "^2.0.4",
+    "quicksettings": "^3.0.1"
+  },
+  "browserslist": "chrome >= 31, edge >= 20, safari >= 6, firefox >= 52, opera >= 15 and > 0.2%"
 }

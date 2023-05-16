@@ -11,5 +11,11 @@ const translate = {
         notInit: '未初始化',
         notSupportedClient: '未知的客户端',
     },
+    settingPanel: {
+        title: 'DD-Danmaku设置',
+        info: {
+            default: '未匹配到视频',
+        },
+    },
 };
 export default translate;

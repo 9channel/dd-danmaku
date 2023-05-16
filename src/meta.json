@@ -1,0 +1,11 @@
+{
+  "@namespace": "https://github.com/RyoLee",
+  "@copyright": "2022, RyoLee (https://github.com/RyoLee)",
+  "@license": "MIT; https://raw.githubusercontent.com/RyoLee/dd-danmaku/master/LICENSE",
+  "@icon": "https://github.githubassets.com/pinned-octocat.svg",
+  "@updateURL": "https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js",
+  "@downloadURL": "https://cdn.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js",
+  "@grant": "none",
+  "@match": "*/web/index.html",
+  "@include": "none"
+}
