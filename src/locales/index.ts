@@ -2,9 +2,8 @@ import * as en from './en-US';
 import * as sc from './zh-CN';
 import * as tc from './zh-TW';
 // 声明locals类型
-export type Locals = typeof sc.default;
-const translate = (window: Window) => {
-    const { language } = window.navigator;
+const translate = (w: Window) => {
+    const { language } = w.navigator;
     switch (language) {
         case 'zh-CN':
             return sc.default;
@@ -14,4 +13,4 @@ const translate = (window: Window) => {
             return en.default;
     }
 };
-export default translate as (window: Window) => Locals;
+export default translate as (w: Window) => Locals;

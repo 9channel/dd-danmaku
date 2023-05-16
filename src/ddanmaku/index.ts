@@ -1,6 +1,6 @@
 import Danmaku from 'danmaku';
-import getClient from '../clients';
-import translate, { Locals } from '../locales';
+import getClient, { Client } from '../clients';
+import translate from '../locales';
 /* 配置名称 */
 const configName = 'ddconfig';
 /* 跨域前缀 */
@@ -12,19 +12,15 @@ const uriSearch = '/api/v2/search/';
 /* 弹幕api */
 const uriComment = '/api/v2/comment/';
 
-type ConfigMap = {
-    [key: string]: any;
-}
-
 export class DanDanDanmaku {
+    win: Window;
+    doc: Document;
     configs: ConfigMap;
     locales: Locals;
     danmaku: Danmaku | null;
-    episode_info: null;
     ob: ResizeObserver | null;
-    loading: boolean;
-    timers: {};
-    client: any;
+    status: PluginStatus;
+    client: Client;
     mediaInfo: {
         /* 是否为系列如番剧电视剧 */
         isSeries: boolean;
@@ -33,7 +29,10 @@ export class DanDanDanmaku {
         /* 唯一id */
         episodeId: null;
     };
-    constructor(window: Window, document: Document) {
+    constructor(win: Window, doc: Document) {
+        this.win = win;
+        this.doc = doc;
+        this.status = PluginStatus.INITIALIZING;
         /* 默认配置 */
         this.configs = {
             fontAutoSize: true,
@@ -50,11 +49,11 @@ export class DanDanDanmaku {
             /* DOM or canvas */
             danmakuEngine: 'canvas',
         };
-        if (window.localStorage.getItem(configName)) {
+        if (win.localStorage.getItem(configName)) {
             // 检查是否有旧配置
-            if (window.localStorage.getItem(configName)) {
+            if (win.localStorage.getItem(configName)) {
                 try {
-                    let oldConfig = JSON.parse(window.localStorage.getItem(configName) as string);
+                    let oldConfig = JSON.parse(win.localStorage.getItem(configName) as string);
                     // 遍历旧配置
                     for (let k in oldConfig) {
                         // configs中有旧配置的key
@@ -69,16 +68,13 @@ export class DanDanDanmaku {
                     console.log(error)
                 }
             }
-            window.localStorage.setItem(configName, JSON.stringify(this.configs));
+            win.localStorage.setItem(configName, JSON.stringify(this.configs));
         }
 
-        this.locales = translate(window);
+        this.locales = translate(win);
         this.danmaku = null;
-        this.episode_info = null;
         this.ob = null;
-        this.loading = false;
-        this.timers = {};
-        this.client = getClient(document, this);
+        this.client = getClient(doc, this);
         /* 当前播放信息 */
         this.mediaInfo = {
             /* 是否为系列如番剧电视剧 */
@@ -91,7 +87,7 @@ export class DanDanDanmaku {
     }
     setConfig(k: string, v: any) {
         this.configs[k] = v;
-        window.localStorage.setItem(configName, JSON.stringify(this.configs));
+        this.win.localStorage.setItem(configName, JSON.stringify(this.configs));
     }
     init() {
         this.client.init();
@@ -120,7 +116,7 @@ export class DanDanDanmaku {
         }
     }
 
-    createDanmaku(danmakus: any, _container: any, _media: any) {
+    createDanmaku(danmakus: any, _container: HTMLElement, _media: HTMLMediaElement) {
         let { fontOpacity } = this.configs;
         let { filterGWidth } = this.configs;
         let { filterVWidth } = this.configs;
@@ -137,7 +133,7 @@ export class DanDanDanmaku {
             this.danmaku.destroy();
             this.danmaku = null;
         }
-        let fontSize = Math.round((window.screen.height > window.screen.width ? window.screen.width : window.screen.height / 1080) * 18);
+        let fontSize = Math.round((this.win.screen.height > this.win.screen.width ? this.win.screen.width : this.win.screen.height / 1080) * 18);
         if (fontAutoSize) {
             fontSize = fontSize * fontScale;
         } else {

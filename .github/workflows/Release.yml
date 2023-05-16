@@ -67,7 +67,9 @@ jobs:
         if [ $? -ne 0 ]; then
           exit 1
         fi
+        npm install uglify-js -g
         cp dist/ddd.user.js public/ddd.user.js
+        uglifyjs -m dist/ddd.user.js -o public/ddd.min.js
     # 发布release
     - name: Create Release
       id: create_release
@@ -83,6 +85,7 @@ jobs:
         # 上传文件
         assets: |
           public/ddd.user.js
+          public/ddd.min.js
     # 发布到 github pages
     - name: Deploy github pages
       uses: peaceiris/actions-gh-pages@v3
@@ -94,3 +97,4 @@ jobs:
     - name: Purge CDN cache
       run: |
         curl https://purge.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.user.js
+        curl https://purge.jsdelivr.net/gh/RyoLee/dd-danmaku@gh-pages/ddd.min.js
