@@ -1,6 +1,6 @@
 import * as emby from './emby';
 import * as jellyfin from './jellyfin';
-import { DanDanDanmaku } from '../DanDanDanmaku';
+import { DanDanDanmaku } from '../ddanmaku';
 
 const client = (document: Document, ddd: DanDanDanmaku) => {
     const appName = (document.querySelector('meta[name="application-name"]') as HTMLMetaElement)?.content ?? '';

@@ -1,5 +1,5 @@
 import './assets/styles/global.module.css'
-import { DanDanDanmaku } from './DanDanDanmaku';
+import { DanDanDanmaku } from './ddanmaku';
 
 const intervalId = setInterval(() => {
     if (window.require !== undefined) {
