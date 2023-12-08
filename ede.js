@@ -15,8 +15,7 @@
 
 (async function () {
     'use strict';
-    if (document.querySelector('meta[name="application-name"]').content == 'Emby'
-        || document.documentElement.classList.contains('accent-emby')) {
+    if (document.querySelector('meta[name="application-name"]').content == 'Emby' || document.documentElement.classList.contains('accent-emby')) {
         // ------ configs start------
         const check_interval = 200;
         const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
@@ -158,7 +157,7 @@
         }
 
         /** 调整字幕大小和透明度的Button
-         * @returns 
+         * @returns
          */
         function createResizeButton() {
             // 创建按钮
@@ -203,7 +202,7 @@
             fontSizeSlider.style.appearance = 'slider-vertical';
             fontSizeSlider.oninput = () => {
                 fontSizeInput.value = parseFloat(fontSizeSlider.value).toFixed(1);
-            }
+            };
             // 输入框
             let fontSizeInput = document.createElement('input');
             fontSizeInput.type = 'text';
@@ -223,7 +222,7 @@
                 } else {
                     fontSizeSlider.value = fontSizeMagnification.toFixed(1);
                 }
-            }
+            };
             // 标签
             let fontSizeLabel = document.createElement('span');
             fontSizeLabel.innerText = '大小';
@@ -247,7 +246,7 @@
             fontOpacitySlider.style.appearance = 'slider-vertical';
             fontOpacitySlider.oninput = () => {
                 fontOpacityInput.value = parseFloat(fontOpacitySlider.value).toFixed(1);
-            }
+            };
             // 输入框
             let fontOpacityInput = document.createElement('input');
             fontOpacityInput.type = 'text';
@@ -267,7 +266,7 @@
                 } else {
                     fontOpacitySlider.value = fontOpacity.toFixed(1);
                 }
-            }
+            };
             // 标签
             let fontOpacityLabel = document.createElement('span');
             fontOpacityLabel.innerText = '透明度';
@@ -289,8 +288,8 @@
                     var y = event.clientY - 160 > 0 ? event.clientY - 160 : 0;
 
                     popDiv.startSetter = '1';
-                    popDiv.style.left = x + "px";
-                    popDiv.style.top = y + "px";
+                    popDiv.style.left = x + 'px';
+                    popDiv.style.top = y + 'px';
                     popDiv.style.display = 'flex';
                 } else {
                     popDiv.style.display = 'none';
@@ -301,10 +300,9 @@
                 }
             });
             // 监听页面点击事件
-            document.addEventListener("click", function (event) {
+            document.addEventListener('click', function (event) {
                 // 检查点击事件的目标元素是否是div或div内的元素
-                if (event.target === popDiv || popDiv.contains(event.target)
-                    || event.target === button || button.contains(event.target)) {
+                if (event.target === popDiv || popDiv.contains(event.target) || event.target === button || button.contains(event.target)) {
                     return; // 如果是，则不执行下面的代码
                 }
                 popDiv.style.display = 'none';
@@ -314,8 +312,8 @@
                 }
             });
             // 监听Input回车结束设置
-            fontSizeInput.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
+            fontSizeInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
                     popDiv.style.display = 'none';
                     if (popDiv.startSetter) {
                         popDiv.startSetter = undefined;
@@ -323,8 +321,8 @@
                     }
                 }
             });
-            fontOpacityInput.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
+            fontOpacityInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
                     popDiv.style.display = 'none';
                     if (popDiv.startSetter) {
                         popDiv.startSetter = undefined;
@@ -647,12 +645,14 @@
                                 reject(null);
                             }
                         }
-                        if (loadType !== LOAD_TYPE.SEARCH
-                            && loadType !== LOAD_TYPE.REFRESH
-                            && loadType !== LOAD_TYPE.RELOAD
-                            && window.ede.danmaku
-                            && window.ede.episode_info
-                            && window.ede.episode_info.episodeId == info.episodeId) {
+                        if (
+                            loadType !== LOAD_TYPE.SEARCH &&
+                            loadType !== LOAD_TYPE.REFRESH &&
+                            loadType !== LOAD_TYPE.RELOAD &&
+                            window.ede.danmaku &&
+                            window.ede.episode_info &&
+                            window.ede.episode_info.episodeId == info.episodeId
+                        ) {
                             reject('当前播放视频未变动');
                         } else {
                             window.ede.episode_info = info;
@@ -664,19 +664,23 @@
                     (episodeId) => {
                         if (episodeId) {
                             if (loadType === LOAD_TYPE.RELOAD && danmuCache[episodeId]) {
-                                createDanmaku(danmuCache[episodeId]).then(() => {
-                                    console.log('弹幕就位');
-                                }).  catch((err)=>{
-                                    console.log(err);
-                                });
+                                createDanmaku(danmuCache[episodeId])
+                                    .then(() => {
+                                        console.log('弹幕就位');
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
                             } else {
                                 getComments(episodeId).then((comments) => {
                                     danmuCache[episodeId] = comments;
-                                    createDanmaku(comments).then(() => {
-                                        console.log('弹幕就位');
-                                      }).catch((err)=>{
-                                        console.log(err);
-                                    });
+                                    createDanmaku(comments)
+                                        .then(() => {
+                                            console.log('弹幕就位');
+                                        })
+                                        .catch((err) => {
+                                            console.log(err);
+                                        });
                                 });
                             }
                         }
