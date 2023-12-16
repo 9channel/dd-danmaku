@@ -3,7 +3,7 @@
 // @description  Emby弹幕插件
 // @namespace    https://github.com/RyoLee
 // @author       RyoLee
-// @version      1.11
+// @version      1.12
 // @copyright    2022, RyoLee (https://github.com/RyoLee)
 // @license      MIT; https://raw.githubusercontent.com/RyoLee/emby-danmaku/master/LICENSE
 // @icon         https://github.githubassets.com/pinned-octocat.svg
@@ -15,16 +15,25 @@
 
 (async function () {
     'use strict';
-    if (document.querySelector('meta[name="application-name"]').content == 'Emby') {
+    if (document.querySelector('meta[name="application-name"]').content == 'Emby' || document.documentElement.classList.contains('accent-emby')) {
         // ------ configs start------
         const check_interval = 200;
         const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
+        const danmuCache = {};
+        const LOAD_TYPE = {
+            CHECK: 'check',
+            INIT: 'init',
+            REFRESH: 'refresh',
+            RELOAD: 'reload',
+            SEARCH: 'search',
+        };
         // 0:当前状态关闭 1:当前状态打开
         const danmaku_icons = ['\uE0B9', '\uE7A2'];
         const search_icon = '\uE881';
         const translate_icon = '\uE927';
         const info_icon = '\uE0E0';
         const filter_icons = ['\uE3E0', '\uE3D0', '\uE3D1', '\uE3D2'];
+        const danmuStyleSetter_icon = '\uE0F0';
         const buttonOptions = {
             class: 'paper-icon-button-light',
             is: 'paper-icon-button-light',
@@ -60,7 +69,7 @@
                     return;
                 }
                 console.log('手动匹配弹幕');
-                reloadDanmaku('search');
+                loadDanmaku(LOAD_TYPE.SEARCH);
             },
         };
         const translateButtonOpts = {
@@ -76,7 +85,7 @@
                 window.ede.chConvert = (window.ede.chConvert + 1) % 3;
                 window.localStorage.setItem('chConvert', window.ede.chConvert);
                 document.querySelector('#translateDanmaku').setAttribute('title', chConverTtitle[window.ede.chConvert]);
-                reloadDanmaku('reload');
+                loadDanmaku(LOAD_TYPE.REFRESH);
                 console.log(document.querySelector('#translateDanmaku').getAttribute('title'));
             },
         };
@@ -147,6 +156,208 @@
             return button;
         }
 
+        /** 调整字幕大小和透明度的Button
+         * @returns
+         */
+        function createResizeButton() {
+            // 创建按钮
+            let button = document.createElement('button', buttonOptions);
+            button.setAttribute('title', '弹幕调整');
+            button.setAttribute('id', 'danmuStyleSetter');
+            //创建按钮图标
+            let icon = document.createElement('span');
+            icon.className = 'md-icon';
+            icon.innerText = danmuStyleSetter_icon;
+
+            // 创建弹出面板
+            let popDiv = document.getElementById('danmuStyleSetterPopPanel');
+            if (popDiv) popDiv.remove();
+            popDiv = document.createElement('div');
+            popDiv.setAttribute('id', 'danmuStyleSetterPopPanel');
+            popDiv.startSetter = undefined;
+            popDiv.style.display = 'none';
+            popDiv.style.position = 'absolute';
+            popDiv.style.padding = '6px';
+            popDiv.style.background = '#555';
+            popDiv.style.flexWrap = 'nowrap';
+            popDiv.style.justifyContent = 'center';
+            popDiv.style.alignItems = 'center';
+
+            // 大小调整SubPanel
+            let fontSizeSetPopDiv = document.createElement('div');
+            fontSizeSetPopDiv.style.display = 'flex';
+            fontSizeSetPopDiv.style.flexDirection = 'column';
+            fontSizeSetPopDiv.style.flexWrap = 'nowrap';
+            fontSizeSetPopDiv.style.justifyContent = 'center';
+            fontSizeSetPopDiv.style.alignItems = 'center';
+            // 滑动条
+            let fontSizeSlider = document.createElement('input');
+            fontSizeSlider.setAttribute('orient', 'vertical');
+            fontSizeSlider.setAttribute('type', 'range');
+            fontSizeSlider.setAttribute('min', '0.1');
+            fontSizeSlider.setAttribute('max', '3');
+            fontSizeSlider.setAttribute('step', '0.1');
+            fontSizeSlider.style.width = '30px';
+            fontSizeSlider.style.height = '60px';
+            fontSizeSlider.style.appearance = 'slider-vertical';
+            fontSizeSlider.oninput = () => {
+                fontSizeInput.value = parseFloat(fontSizeSlider.value).toFixed(1);
+            };
+            // 输入框
+            let fontSizeInput = document.createElement('input');
+            fontSizeInput.type = 'text';
+            fontSizeInput.style.width = '30px';
+            fontSizeInput.style.textAlign = 'center';
+            fontSizeInput.oninput = () => {
+                var oldValue = window.localStorage.getItem('danmakuFontSizeMagnification') ?? '1.0';
+                var fontSizeMagnification = parseFloat(fontSizeInput.value);
+                if (isNaN(fontSizeMagnification)) {
+                    fontSizeInput.value = oldValue;
+                    fontSizeSlider.value = oldValue;
+                    alert('请输入有效的数字！');
+                } else if (fontSizeMagnification < 0.1 || fontSizeMagnification > 3) {
+                    fontSizeInput.value = oldValue;
+                    fontSizeSlider.value = oldValue;
+                    alert('请输入0.1到3之间的数字！');
+                } else {
+                    fontSizeSlider.value = fontSizeMagnification.toFixed(1);
+                }
+            };
+            // 标签
+            let fontSizeLabel = document.createElement('span');
+            fontSizeLabel.innerText = '大小';
+
+            // 透明度调整SubPanel
+            let fontOpacitySetPopDiv = document.createElement('div');
+            fontOpacitySetPopDiv.style.display = 'flex';
+            fontOpacitySetPopDiv.style.flexDirection = 'column';
+            fontOpacitySetPopDiv.style.flexWrap = 'nowrap';
+            fontOpacitySetPopDiv.style.justifyContent = 'center';
+            fontOpacitySetPopDiv.style.alignItems = 'center';
+            // 滑动条
+            let fontOpacitySlider = document.createElement('input');
+            fontOpacitySlider.setAttribute('orient', 'vertical');
+            fontOpacitySlider.setAttribute('type', 'range');
+            fontOpacitySlider.setAttribute('min', '0.1');
+            fontOpacitySlider.setAttribute('max', '1');
+            fontOpacitySlider.setAttribute('step', '0.1');
+            fontOpacitySlider.style.width = '30px';
+            fontOpacitySlider.style.height = '60px';
+            fontOpacitySlider.style.appearance = 'slider-vertical';
+            fontOpacitySlider.oninput = () => {
+                fontOpacityInput.value = parseFloat(fontOpacitySlider.value).toFixed(1);
+            };
+            // 输入框
+            let fontOpacityInput = document.createElement('input');
+            fontOpacityInput.type = 'text';
+            fontOpacityInput.style.width = '30px';
+            fontOpacityInput.style.textAlign = 'center';
+            fontOpacityInput.oninput = () => {
+                var oldValue = window.localStorage.getItem('danmakuFontOpacity') ?? '1.0';
+                var fontOpacity = parseFloat(fontOpacityInput.value);
+                if (isNaN(fontOpacity)) {
+                    fontOpacityInput.value = oldValue;
+                    fontOpacitySlider.value = oldValue;
+                    alert('请输入有效的数字！');
+                } else if (fontOpacity < 0 || fontOpacity > 1) {
+                    fontOpacityInput.value = oldValue;
+                    fontOpacitySlider.value = oldValue;
+                    alert('请输入0到1之间的数字！');
+                } else {
+                    fontOpacitySlider.value = fontOpacity.toFixed(1);
+                }
+            };
+            // 标签
+            let fontOpacityLabel = document.createElement('span');
+            fontOpacityLabel.innerText = '透明度';
+
+            // 监听鼠标点击事件
+            button.addEventListener('click', function (event) {
+                if (popDiv.style.display == 'none') {
+                    // 赋初值
+                    let curFontSizeMag = window.localStorage.getItem('danmakuFontSizeMagnification');
+                    let curFontOpacity = window.localStorage.getItem('danmakuFontOpacity');
+                    curFontSizeMag = isNaN(parseFloat(curFontSizeMag)) ? '1.0' : curFontSizeMag;
+                    curFontOpacity = isNaN(parseFloat(curFontOpacity)) ? '1.0' : curFontOpacity;
+                    fontSizeSlider.value = curFontSizeMag;
+                    fontSizeInput.value = curFontSizeMag;
+                    fontOpacitySlider.value = curFontOpacity;
+                    fontOpacityInput.value = curFontOpacity;
+                    // CSS
+                    var x = event.clientX - 36 > 0 ? event.clientX - 36 : 0;
+                    var y = event.clientY - 160 > 0 ? event.clientY - 160 : 0;
+
+                    popDiv.startSetter = '1';
+                    popDiv.style.left = x + 'px';
+                    popDiv.style.top = y + 'px';
+                    popDiv.style.display = 'flex';
+                } else {
+                    popDiv.style.display = 'none';
+                    if (popDiv.startSetter) {
+                        popDiv.startSetter = undefined;
+                        doFontResizeAndOpacityChange(fontSizeInput.value, fontOpacityInput.value);
+                    }
+                }
+            });
+            // 监听页面点击事件
+            document.addEventListener('click', function (event) {
+                // 检查点击事件的目标元素是否是div或div内的元素
+                if (event.target === popDiv || popDiv.contains(event.target) || event.target === button || button.contains(event.target)) {
+                    return; // 如果是，则不执行下面的代码
+                }
+                popDiv.style.display = 'none';
+                if (popDiv.startSetter) {
+                    popDiv.startSetter = undefined;
+                    doFontResizeAndOpacityChange(fontSizeInput.value, fontOpacityInput.value);
+                }
+            });
+            // 监听Input回车结束设置
+            fontSizeInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    popDiv.style.display = 'none';
+                    if (popDiv.startSetter) {
+                        popDiv.startSetter = undefined;
+                        doFontResizeAndOpacityChange(fontSizeInput.value, fontOpacityInput.value);
+                    }
+                }
+            });
+            fontOpacityInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    popDiv.style.display = 'none';
+                    if (popDiv.startSetter) {
+                        popDiv.startSetter = undefined;
+                        doFontResizeAndOpacityChange(fontSizeInput.value, fontOpacityInput.value);
+                    }
+                }
+            });
+
+            // icon插入button
+            button.appendChild(icon);
+            // 将滑动条和输入框添加到pop
+            fontSizeSetPopDiv.appendChild(fontSizeSlider);
+            fontSizeSetPopDiv.appendChild(fontSizeInput);
+            fontSizeSetPopDiv.appendChild(fontSizeLabel);
+            fontOpacitySetPopDiv.appendChild(fontOpacitySlider);
+            fontOpacitySetPopDiv.appendChild(fontOpacityInput);
+            fontOpacitySetPopDiv.appendChild(fontOpacityLabel);
+            popDiv.appendChild(fontSizeSetPopDiv);
+            popDiv.appendChild(fontOpacitySetPopDiv);
+            // 将POP插入body
+            document.body.appendChild(popDiv);
+
+            return button;
+        }
+        /** 执行弹幕大小和透明度变换 */
+        function doFontResizeAndOpacityChange(fontSize, fontOpacity) {
+            let oldFontSize = window.localStorage.getItem('danmakuFontSizeMagnification');
+            let oldFontOpacity = window.localStorage.getItem('danmakuFontOpacity');
+            if (fontSize != oldFontSize || fontOpacity != oldFontOpacity) {
+                window.localStorage.setItem('danmakuFontSizeMagnification', fontSize);
+                window.localStorage.setItem('danmakuFontOpacity', fontOpacity);
+                loadDanmaku(LOAD_TYPE.RELOAD);
+            }
+        }
+
         function initListener() {
             let container = document.querySelector(mediaQueryStr);
             // 页面未加载
@@ -159,7 +370,7 @@
             if (!container.getAttribute('ede_listening')) {
                 console.log('正在初始化Listener');
                 container.setAttribute('ede_listening', true);
-                container.addEventListener('play', reloadDanmaku);
+                container.addEventListener('play', loadDanmaku);
                 console.log('Listener初始化完成');
             }
         }
@@ -224,6 +435,8 @@
             menubar.appendChild(createButton(filterButtonOpts));
             // 弹幕信息
             menubar.appendChild(createButton(infoButtonOpts));
+            // 弹幕大小调整
+            menubar.appendChild(createResizeButton());
             console.log('UI初始化完成');
         }
 
@@ -302,6 +515,7 @@
             }
             if (!is_auto) {
                 animeName = prompt('确认动画名:', animeName);
+                if (animeName == null) throw new Error('用户取消确认动画名操作');
             }
 
             let searchUrl = 'https://api.dandanplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
@@ -335,11 +549,13 @@
                 let anime_lists_str = list2string(animaInfo);
                 console.log(anime_lists_str);
                 selecAnime_id = prompt('选择:\n' + anime_lists_str, selecAnime_id);
+                if (selecAnime_id == null) throw new Error('用户取消选择集数操作');
                 selecAnime_id = parseInt(selecAnime_id) - 1;
                 window.localStorage.setItem(_id_key, animaInfo.animes[selecAnime_id].animeId);
                 window.localStorage.setItem(_name_key, animaInfo.animes[selecAnime_id].animeTitle);
                 let episode_lists_str = ep2string(animaInfo.animes[selecAnime_id].episodes);
                 episode = prompt('确认集数:\n' + episode_lists_str, parseInt(episode));
+                if (episode == null) throw new Error('用户取消确认集数操作');
                 episode = parseInt(episode) - 1;
             } else {
                 selecAnime_id = parseInt(selecAnime_id) - 1;
@@ -393,6 +609,7 @@
 
             let _container = document.querySelector(mediaContainerQueryStr);
             let _media = document.querySelector(mediaQueryStr);
+            if (!_media) throw new Error('用户已退出视频播放');
             window.ede.danmaku = new Danmaku({
                 container: _container,
                 media: _media,
@@ -412,23 +629,30 @@
             window.ede.ob.observe(_container);
         }
 
-        function reloadDanmaku(type = 'check') {
+        function loadDanmaku(loadType = LOAD_TYPE.CHECK) {
             if (window.ede.loading) {
                 console.log('正在重新加载');
                 return;
             }
             window.ede.loading = true;
-            getEpisodeInfo(type != 'search')
+            getEpisodeInfo(loadType !== LOAD_TYPE.SEARCH)
                 .then((info) => {
                     return new Promise((resolve, reject) => {
                         if (!info) {
-                            if (type != 'init') {
+                            if (loadType !== LOAD_TYPE.INIT) {
                                 reject('播放器未完成加载');
                             } else {
                                 reject(null);
                             }
                         }
-                        if (type != 'search' && type != 'reload' && window.ede.danmaku && window.ede.episode_info && window.ede.episode_info.episodeId == info.episodeId) {
+                        if (
+                            loadType !== LOAD_TYPE.SEARCH &&
+                            loadType !== LOAD_TYPE.REFRESH &&
+                            loadType !== LOAD_TYPE.RELOAD &&
+                            window.ede.danmaku &&
+                            window.ede.episode_info &&
+                            window.ede.episode_info.episodeId == info.episodeId
+                        ) {
                             reject('当前播放视频未变动');
                         } else {
                             window.ede.episode_info = info;
@@ -437,12 +661,30 @@
                     });
                 })
                 .then(
-                    (episodeId) =>
-                        getComments(episodeId).then((comments) =>
-                            createDanmaku(comments).then(() => {
-                                console.log('弹幕就位');
-                            }),
-                        ),
+                    (episodeId) => {
+                        if (episodeId) {
+                            if (loadType === LOAD_TYPE.RELOAD && danmuCache[episodeId]) {
+                                createDanmaku(danmuCache[episodeId])
+                                    .then(() => {
+                                        console.log('弹幕就位');
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+                            } else {
+                                getComments(episodeId).then((comments) => {
+                                    danmuCache[episodeId] = comments;
+                                    createDanmaku(comments)
+                                        .then(() => {
+                                            console.log('弹幕就位');
+                                        })
+                                        .catch((err) => {
+                                            console.log(err);
+                                        });
+                                });
+                            }
+                        }
+                    },
                     (msg) => {
                         if (msg) {
                             console.log(msg);
@@ -454,6 +696,9 @@
                     if (document.getElementById('danmakuCtr').style.opacity != 1) {
                         document.getElementById('danmakuCtr').style.opacity = 1;
                     }
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
         }
 
@@ -499,8 +744,13 @@
                     const mode = { 6: 'ltr', 1: 'rtl', 5: 'top', 4: 'bottom' }[values[1]];
                     if (!mode) return null;
                     //const fontSize = Number(values[2]) || 25
-                    const fontSize = Math.round((window.screen.height > window.screen.width ? window.screen.width : window.screen.height / 1080) * 18);
-                    const color = `000000${Number(values[2]).toString(16)}`.slice(-6);
+                    // 弹幕大小
+                    const fontSizeMagnification = parseFloat(localStorage.getItem('danmakuFontSizeMagnification')) || 1;
+                    const fontSize = Math.round((window.screen.height > window.screen.width ? window.screen.width : window.screen.height / 1080) * 18 * fontSizeMagnification);
+                    // 弹幕透明度
+                    const fontOpacity = Math.round((parseFloat(localStorage.getItem('danmakuFontOpacity')) || 1.0) * 255).toString(16);
+                    // 弹幕颜色+透明度
+                    const color = `000000${Number(values[2]).toString(16)}${fontOpacity}`.slice(-8);
                     return {
                         text: $comment.m,
                         mode,
@@ -513,7 +763,7 @@
 
                             font: `${fontSize}px sans-serif`,
                             fillStyle: `#${color}`,
-                            strokeStyle: color === '000000' ? '#fff' : '#000',
+                            strokeStyle: color === '000000' ? `#ffffff${fontOpacity}` : `#000000${fontOpacity}`,
                             lineWidth: 2.0,
                         },
                     };
@@ -556,7 +806,7 @@
             while (!(await getEmbyItemInfo())) {
                 await new Promise((resolve) => setTimeout(resolve, 200));
             }
-            reloadDanmaku('init');
+            loadDanmaku(LOAD_TYPE.INIT);
             setInterval(() => {
                 initListener();
             }, check_interval);
