@@ -9,13 +9,20 @@
 // @icon         https://github.githubassets.com/pinned-octocat.svg
 // @updateURL    https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js
 // @downloadURL  https://cdn.jsdelivr.net/gh/RyoLee/emby-danmaku@gh-pages/ede.user.js
-// @grant        none
+// @grant   GM_registerMenuCommand
+// @grant   GM_setValue
+// @grant   GM_getValue
 // @match        */web/index.html
 // ==/UserScript==
 
 (async function () {
+    //注册插件菜单
+    GM_registerMenuCommand("Emby服务器名称",function(){
+        const EmbyName = prompt("请输入服务器名称:");
+        GM_setValue("EmbyName",EmbyName)
+     })
     'use strict';
-    if (document.querySelector('meta[name="application-name"]').content == 'Emby') {
+    if (document.querySelector('meta[name="application-name"]').content == GM_getValue("EmbyName","Emby")) {
         // ------ configs start------
         const check_interval = 200;
         const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
@@ -25,6 +32,8 @@
         const translate_icon = '\uE927';
         const info_icon = '\uE0E0';
         const filter_icons = ['\uE3E0', '\uE3D0', '\uE3D1', '\uE3D2'];
+        const fontSize_icon =
+         '<svg t="1707762095726" class="icon" viewBox="0 0 1064 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3633" width="24" height="24"><path d="M495.73888 195.91168a30.72 30.72 0 0 0-55.37792 2.2528L139.22304 900.79232a51.2 51.2 0 0 1-94.12608-40.30464L346.23488 157.81888c44.07296-102.8096 187.63776-108.70784 240.0256-9.8304l104.12032 196.68992a51.2 51.2 0 1 1-90.5216 47.9232l-104.12032-196.68992zM779.75552 570.28608c-10.36288-26.46016-47.9232-25.84576-57.50784 0.86016l-131.31776 367.65696a51.2 51.2 0 0 1-96.41984-34.4064l131.31776-367.65696c41.3696-115.87584 204.26752-118.3744 249.2416-3.93216l145.408 370.0736a51.2 51.2 0 1 1-95.31392 37.43744l-145.408-370.03264z" fill="#ffffff" p-id="3634" data-spm-anchor-id="a313x.search_index.0.i12.73ca3a81uN587a" class="selected"></path><path d="M163.84 593.92c0-28.2624 22.9376-51.2 51.2-51.2h266.24a51.2 51.2 0 1 1 0 102.4h-266.24c-28.2624 0-51.2-22.9376-51.2-51.2zM573.44 778.24c0-28.2624 22.9376-51.2 51.2-51.2h266.24a51.2 51.2 0 1 1 0 102.4h-266.24c-28.2624 0-51.2-22.9376-51.2-51.2z" fill="#ffffff" p-id="3635" data-spm-anchor-id="a313x.search_index.0.i13.73ca3a81uN587a" class="selected"></path></svg>';
         const buttonOptions = {
             class: 'paper-icon-button-light',
             is: 'paper-icon-button-light',
@@ -50,6 +59,11 @@
                 }
             },
         };
+        const fontSize_Setting = parseInt(
+            window.localStorage.getItem("danmakuFontSize")
+                ? window.localStorage.getItem("danmakuFontSize")
+                : 18
+        );
         const searchButtonOpts = {
             title: '搜索弹幕',
             id: 'searchDanmaku',
@@ -110,6 +124,24 @@
                 document.querySelector('#filteringDanmaku').children[0].innerText = filter_icons[level];
             },
         };
+        const fontSizeSetting = {
+            title:
+                "字体大小(下次加载生效:" +
+                window.localStorage.getItem("danmakuFontSize") +
+                ")",
+            id: "fontSizeSetting",
+            innerText: fontSize_icon,
+            onclick: () => {
+                console.log("修改弹幕字体大小");
+                const size = parseInt(prompt("请输入字体大小："));;
+                if(0 < size){
+                    window.localStorage.setItem("danmakuFontSize", size);
+                }else{
+                    alert("请输入正确的字体大小")
+                }
+                
+            },
+        };
         // ------ configs end------
         /* eslint-disable */
         /* https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js */
@@ -141,7 +173,7 @@
             button.setAttribute('id', opt.id);
             let icon = document.createElement('span');
             icon.className = 'md-icon';
-            icon.innerText = opt.innerText;
+            icon.innerHTML = opt.innerText;
             button.appendChild(icon);
             button.onclick = opt.onclick;
             return button;
@@ -224,6 +256,8 @@
             menubar.appendChild(createButton(filterButtonOpts));
             // 弹幕信息
             menubar.appendChild(createButton(infoButtonOpts));
+            //字体大小
+            menubar.appendChild(createButton(fontSizeSetting));
             console.log('UI初始化完成');
         }
 
@@ -499,7 +533,7 @@
                     const mode = { 6: 'ltr', 1: 'rtl', 5: 'top', 4: 'bottom' }[values[1]];
                     if (!mode) return null;
                     //const fontSize = Number(values[2]) || 25
-                    const fontSize = Math.round((window.screen.height > window.screen.width ? window.screen.width : window.screen.height / 1080) * 18);
+                    const fontSize = Math.round((window.screen.height > window.screen.width ? window.screen.width : window.screen.height / 1080) * fontSize_Setting);
                     const color = `000000${Number(values[2]).toString(16)}`.slice(-6);
                     return {
                         text: $comment.m,
