@@ -15,7 +15,10 @@
 
 (async function () {
     'use strict';
-    if (document.querySelector('meta[name="application-name"]').content == 'Emby') {
+    const appVersion = document.querySelector('html').getAttribute('data-appversion').substring(0, 3);
+    const isVersionOld = appVersion < 4.8;
+    const applicationName = document.querySelector('meta[name="application-name"]').content;
+    if (applicationName == 'Emby' || applicationName.includes('Media Server')) {
         // ------ configs start------
         const check_interval = 200;
         const chConverTtitle = ['当前状态: 未启用', '当前状态: 转换为简体', '当前状态: 转换为繁体'];
@@ -30,7 +33,10 @@
             is: 'paper-icon-button-light',
         };
         const uiAnchorStr = '\uE034';
-        const mediaContainerQueryStr = "div[data-type='video-osd']";
+        let mediaContainerQueryStr = ".htmlVideoPlayerContainer";
+        if (isVersionOld) {
+            mediaContainerQueryStr = "div[data-type='video-osd']";
+        }
         const mediaQueryStr = 'video';
         const displayButtonOpts = {
             title: '弹幕开关',
@@ -304,7 +310,7 @@
                 animeName = prompt('确认动画名:', animeName);
             }
 
-            let searchUrl = 'https://api.dandanplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
+            let searchUrl = 'https://api.9-ch.com/cors/https://api.dandanplay.net/api/v2/search/episodes?anime=' + animeName + '&withRelated=true';
             if (is_auto) {
                 searchUrl += '&episode=' + episode;
             }
@@ -393,6 +399,9 @@
 
             let _container = document.querySelector(mediaContainerQueryStr);
             let _media = document.querySelector(mediaQueryStr);
+            if (!isVersionOld) {
+                _media.style.position = 'absolute';
+            }
             window.ede.danmaku = new Danmaku({
                 container: _container,
                 media: _media,
